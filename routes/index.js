@@ -1,13 +1,5 @@
-
-var express = require('express');
-var router = express.Router();
-
-// GET: /
-router.get('/', function(req, res) {
-  res.render('index', {
-    title: 'Hello, World!'
-
 const express = require('express');
+
 const DB = require('../helpers/db');
 
 const router = express.Router();
@@ -20,10 +12,7 @@ router.get('/', (req, res, next) => {
 router.get('/register', (req, res, next) => {
   res.render('register')
 });
-router.get('/register', (req, res, next) => {
 
-  res.render('register')
-});
 router.post('/register', (req, res, next) => {
 
   var username = req.body.username;
