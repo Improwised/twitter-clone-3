@@ -6,6 +6,22 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const expressValidator = require('express-validator');
+
+// Load dotenv config
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  // eslint-disable-next-line global-require
+  require('dotenv').load();
+
+  if (!process.env.PORT) {
+    console.error('Required environment variable not found. Are you sure you have a ".env" file in your application root?');
+    console.error('If not, you can just copy "example.env" and change the defaults as per your need.');
+    process.exit(1);
+  }
+}
+
+const routes = require('./routes');
+
 const app = express();
 const routes = require('./routes');
 const server = http.createServer(app);
@@ -18,9 +34,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(expressValidator());
 
 app.use('/', routes);
-
 // Catch 404 errors
 // Forwarded to the error handlers
 app.use(function(req, res, next) {
