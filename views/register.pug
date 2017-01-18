@@ -1,0 +1,42 @@
+extends ./layouts/main.pug
+
+block content
+  h1= title
+  .container.head
+      ul.nav.nav-tabs
+        li.active
+          a(href='#') Home
+        li
+          a(href='#') About us
+  .container
+    .col
+    h1 Join twitter Today
+    form(action='/register' , method="post", class='form-horizontal' )
+      div(class='form-content' text-align="center")
+        div(class='form-group')
+          div(class='col-sm-4')
+            input(type="text", name="username", class='form-control form-control-inline', placeholder='username')
+        div(class='form-group')
+          div(class='col-sm-4')
+            input(type="number", name="mobileno", class='form-control form-control-inline', placeholder='Mobile Number')
+        div(class='form-group')
+          div(class='col-sm-4')
+            input(type="text", name="email", class='form-control form-control-inline', placeholder='Phone')
+        div(class='form-group')
+          div(class='col-sm-4')
+            input(type="password", name="password", class='form-control form-control-inline', placeholder='password')
+        div(class='form-group')
+          div(class='col-sm-4')
+            input(type="password", name="confirmpassword", class='form-control form-control-inline' placeholder='Confirm password')
+        div(class='form-group')
+          .col-sm-4
+            .checkbox
+              label
+                input(type="checkbox")
+                | Tailor Twitter based on my recent website visits &nbsp;
+              a(href = "https://support.twitter.com/articles/20169421")
+                | Learn more.
+        div(class="form-group")
+          .col-sm-4
+            button.btn.btn-default(type='submit') Sign in
+
