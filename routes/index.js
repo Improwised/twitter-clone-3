@@ -55,5 +55,23 @@ router.post('/register', (req, res, next) => {
     res.render('/login')
   });
   }
+
+router.get('/login', (req, res, next) => {
+  // Constuct and run a simple query
+  // const query = DB.builder()
+  //   .select()
+  //   .function('NOW()')
+  //   .toParam();
+
+  // DB.executeQuery(query, (error, results) => {
+  //   if (error) {
+  //     next(error);
+  //     return;
+  //   }
+  res.render('login');
+  //   res.render('index', {
+  //     title: `Time from the database is ${results.rows[0].now}`,
+  //   });
+  // });
 });
 module.exports = router;
