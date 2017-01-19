@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const expressValidator = require('express-validator');
+
 // Load dotenv config
 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
   // eslint-disable-next-line global-require
@@ -21,6 +23,7 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
 const routes = require('./routes');
 
 const app = express();
+
 const server = http.createServer(app);
 
 app.set('views', path.join(__dirname, 'views'));
@@ -31,9 +34,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(expressValidator());
 
 app.use('/', routes);
-
 // Catch 404 errors
 // Forwarded to the error handlers
 app.use((req, res, next) => {

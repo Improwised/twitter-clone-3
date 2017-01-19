@@ -21,17 +21,17 @@ block content
         //-           a(href='#') Punjabi
 
     .container
-      form.form-horizontal.page-canvas
+      form.form-horizontal.page-canvas(action='/login' , method="post")
         .signin-wrapper
           .form-group
             .col-sm-8
               h1= 'Log in to Twitter'
           .form-group
             .col-sm-5
-              input#inputEmail3.form-control(type='text', name='uid', placeholder='Phone, email or username')
+              input#inputEmail3.form-control(type='text', name='username', placeholder='Phone, email or username')
           .form-group
             .col-sm-5
-              input#inputPassword3.form-control(type='password', name='pwd', placeholder='Password')
+              input#inputPassword3.form-control(type='password', name='password', placeholder='Password')
           .form-group
             .col-sm-12
               .col
@@ -42,4 +42,4 @@ block content
                     input(type='checkbox' value='1' name='remember_me' checked='checked')
                     | Remember me
                     span.separator &nbsp;&middot;&nbsp;
-                    a(href='#' rel='noopener') Forgot password?
+                    a(href='/forgot_password' rel='noopener') Forgot password?
