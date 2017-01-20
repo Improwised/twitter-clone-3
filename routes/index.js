@@ -20,22 +20,6 @@ router.post('/login', (req, res, next) => {
 
   var username = req.body.username;
   var password = req.body.password;
-  // console.log(username + password);
-  // return false;
-  // User.manualLogin(username, password, function(error, object) {
-  //   if (!object) {
-  //     res.redirect('/login');
-  //   } else {
-  //     req.session.username = object;
-  //     if (req.body['remember_me'] == 'true') {
-  //       res.cookie('username', object.username, { maxAge: 900000 });
-  //       res.cookie('password', object.password, { maxAge: 900000 });
-  //     }
-  //     // res.redirect('/welcome');
-  //     res.send('Hello ' + username);
-  //   }
-  // })
-  // if (username == )
 
   const query = DB.builder()
     .select()
@@ -44,7 +28,7 @@ router.post('/login', (req, res, next) => {
     .where('password = ?',password)
     .toParam();
     console.log(query);
-    //return false;
+
   DB.executeQuery(query, (error, results) => {
 
    if (error) {
@@ -62,7 +46,7 @@ router.post('/login', (req, res, next) => {
    {
     console.log("Log in Not successfully");
    }
-   //res.send(results);
+
   });
 })
 
@@ -111,20 +95,19 @@ router.get('/retrive_password', (req, res, next) => {
 })
 
 router.get('/', (req, res, next) => {
-  res.render('index')
+  res.render('index');
 });
 
 router.get('/register', (req, res, next) => {
-  res.render('register')
+  res.render('register');
 });
 
 router.post('/register', (req, res, next) => {
 
-  var username = req.body.username;
-  var email = req.body.email;
-  var mobileno = req.body.mobileno;
-  var password = req.body.password;
-  //console.log(mobileno);
+  const username = req.body.username;
+  const email = req.body.email;
+  const mobileno = req.body.mobileno;
+  const password = req.body.password;
 
   req.checkBody('username', 'Username is required').notEmpty();
   req.checkBody('mobileno', 'Mobile No is required').notEmpty();
@@ -133,12 +116,12 @@ router.post('/register', (req, res, next) => {
   req.checkBody('password', 'Password is required').notEmpty();
   req.checkBody('confirmpassword', 'Password do not match').equals(req.body.password);
 
-  var errors = req.validationErrors();
+  const errors = req.validationErrors();
 
-  if(errors) {
+  if (errors) {
     console.log('FAILED');
     res.render('register', {
-      errors : errors
+      errors: errors,
     });
   } else {
     const query = DB.builder()
@@ -149,6 +132,7 @@ router.post('/register', (req, res, next) => {
     .set("mobilenumber", mobileno)
     .set("password", password)
     .toParam();
+
      console.log("-->", query);
     DB.executeQuery(query, (error, results) => {
 
@@ -192,5 +176,13 @@ router.get('/logout', (req, res, next) => {
     req.logout();
     res.redirect('/login');
   });
+});
+
+router.get('/profilechange', (req, res, next) => {
+  res.render('profilechange');
+});
+
+router.get('/profilepictureupload', (req, res, next) => {
+  res.render('profilepictureupload');
 });
 module.exports = router;
