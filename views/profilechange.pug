@@ -1,0 +1,55 @@
+extends ./layouts/main.pug
+
+block content
+  h1= title
+  .container.head
+      ul.nav.nav-tabs
+        li.active
+          a(href='#') Twitter
+        li
+          a(href='#') Notification
+        ul.nav.navbar-nav.navbar-right
+          li
+            a(href='#') Logout
+          li
+            a(href='#') Link
+  .container
+    .fb-profile
+      img.fb-image-lg(align='left', src='./images/cover.jpg', alt='Profile image example' width ="100%")
+      img.fb-image-profile.thumbnail(align='left', src='http://lorempixel.com/180/180/people/8/', alt='Profile image example')
+      .fb-profile-text
+          h1 abcd
+  .container
+    .row.profile
+      .col-md-3
+        .profile-usermenu
+          ul.nav
+            li.active
+              a(href='#')
+                i.glyphicon.glyphicon-user
+                |               change Profile picture
+
+            li
+              a(href='#', target='_blank')
+                i.glyphicon.glyphicon-ok
+                |               help
+            li
+              a(href='#', target='_blank')
+                i.glyphicon.glyphicon-ok
+                |               folllowers
+
+          // END MENU
+      .col-md-9
+      .profile-content
+        .container
+          .row
+            h3 Your tweets are here !!!!
+            .media.block-update-card
+              a.pull-left(href='#')
+                img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
+              .media-body.update-card-body
+                h4.media-heading abcd
+                p
+                  | This is the body content of this media.This can be
+                  | used as an update panel
+

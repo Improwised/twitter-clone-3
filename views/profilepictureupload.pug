@@ -1,0 +1,32 @@
+extends ./layouts/main.pug
+
+block content
+  h1= title
+  script(src = "./js/uploadfile.js")
+  .container.head
+      ul.nav.nav-tabs
+        li.active
+          a(href='#') Twitter
+        li
+          a(href='#') Notification
+        ul.nav.navbar-nav.navbar-right
+          li
+            a(href='#') Logout
+          li
+            a(href='#') Link
+
+  .container
+    .row
+      h3 image before it is uploaded
+      hr
+      .col-md-4.col-md-offset-4
+        .form-group
+          .main-img-preview
+            img.thumbnail.img-preview(src='http://lorempixel.com/180/180/people/8/', title='Preview ' width ="285px" height="300px")
+    .row
+      .col-md-4.col-md-offset-4
+        .input-group-btn(width="100px")
+            .fileUpload.btn.btn-primary
+              input#logo-id(name='logo', type='file' width="100%")
+
+
