@@ -1,45 +1,45 @@
 extends ./layouts/main.pug
 
 block content
-  .container
-    .container.head
-      ul.nav.nav-tabs
-        li.active
-          a(href='#') Home
-        li
-          a(href='#') About us
-        //- li.navbar-right.dropdown
-        //-   a.dropdown-toggle(href='#', data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false") English
-        //-       ul.dropdown-menu
-        //-         li
-        //-           a(href='#') English
-        //-         li
-        //-           a(href='#') Hindi
-        //-         li
-        //-           a(href='#') Gujarati
-        //-         li
-        //-           a(href='#') Punjabi
+  h1= title
+  .container.head
+    ul.nav.nav-tabs
+      li.active
+        a(href='#') Home
+      li
+        a(href='#') About us
+      //- li.navbar-right.dropdown
+      //-   a.dropdown-toggle(href='#', data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false") English
+      //-       ul.dropdown-menu
+      //-         li
+      //-           a(href='#') English
+      //-         li
+      //-           a(href='#') Hindi
+      //-         li
+      //-           a(href='#') Gujarati
+      //-         li
+      //-           a(href='#') Punjabi
 
-    .container
-      form.form-horizontal.page-canvas(action='/login' , method="post")
-        .signin-wrapper
-          .form-group
-            .col-sm-8
-              h1= 'Log in to Twitter'
-          .form-group
-            .col-sm-5
-              input#inputEmail3.form-control(type='text', name='username', placeholder='Phone, email or username')
-          .form-group
-            .col-sm-5
-              input#inputPassword3.form-control(type='password', name='password', placeholder='Password')
-          .form-group
-            .col-sm-12
-              .col
-                button.btn.btn-primary(align='left' type='submit') Log in
-              .col-sm-7
-                .checkbox
-                  label
-                    input(type='checkbox' value='1' name='remember_me' checked='checked')
-                    | Remember me
-                    span.separator &nbsp;&middot;&nbsp;
-                    a(href='/forgot_password' rel='noopener') Forgot password?
+  .container
+    form.form-horizontal.page-canvas(action='/login' , method="post")
+      .signin-wrapper
+        .form-group
+          .col-sm-8
+            h1= 'Log in to Twitter'
+        .form-group
+          .col-sm-5
+            input#inputEmail3.form-control(type='text', name='username', placeholder='Phone, email or username')
+        .form-group
+          .col-sm-5
+            input#inputPassword3.form-control(type='password', name='password', placeholder='Password')
+        .form-group
+          .col-sm-12
+            .col
+              button.btn.btn-primary(align='left' type='submit') Log in
+            .col-sm-7
+              .checkbox
+                label
+                  input(type='checkbox' value='1' name='remember_me' checked='checked')
+                  | Remember me
+                  span.separator &nbsp;&middot;&nbsp;
+                  a(href='/retrive_password' rel='noopener') Forgot password?
