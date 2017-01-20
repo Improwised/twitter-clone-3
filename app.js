@@ -19,11 +19,6 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     process.exit(1);
   }
 }
-
-const routes = require('./routes');
-
-const app = express();
-
 const routes = require('./routes');
 
 const app = express();
