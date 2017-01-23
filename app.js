@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+var session = require('express-session')
 
 const expressValidator = require('express-validator');
 
@@ -36,7 +37,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressValidator());
 
+app.use(session({
+ secret: 'password',
+ resave: false,
+ saveUninitialized: true
+}))
+
 app.use('/', routes);
+app.use('/login', routes);
+app.use('/logout', routes);
+app.use('/tweet', routes);
+app.use('/retrive_password', routes);
+app.use('/register', routes);
+app.use('/welcome', routes);
+app.use('/profilechange', routes);
+app.use('/profilepictureupload', routes);
 // Catch 404 errors
 // Forwarded to the error handlers
 app.use((req, res, next) => {

@@ -11,31 +11,32 @@ block content
           a(href='#') Notification
         ul.nav.navbar-nav.navbar-right
           li
-            a(href='#') Logout
+            form(action='/logout' method='get')
+              input(type='submit' value='Logout')
           li
             a(href='#') Link
-            // Sidebar Menu Items - These collapse to the responsive navigation menu on small screens
+            //- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens
     .container
       .row.profile
         .col-md-3
           .profile-sidebar
-            // SIDEBAR USERPIC
+            //- SIDEBAR USERPIC
             .profile-userpic
               img.img-responsive(src='./images/cover.jpg', alt='')
-            // END SIDEBAR USERPIC
-            // SIDEBAR USER TITLE
+            //- END SIDEBAR USERPIC
+            //- SIDEBAR USER TITLE
             .profile-usertitle
               .profile-usertitle-name
-                | Marcus Doe
+                | #{results.username}
               .profile-usertitle-job
                 | Developer
-            // END SIDEBAR USER TITLE
-            // SIDEBAR BUTTONS
+            //- END SIDEBAR USER TITLE
+            //- SIDEBAR BUTTONS
             .profile-userbuttons
               button.btn.btn-primary.btn-sm(type='button') Follow
               button.btn.btn-primary.btn-sm(type='button') Unfollow
-            // END SIDEBAR BUTTONS
-            // SIDEBAR MENU
+            //- END SIDEBAR BUTTONS
+            //- SIDEBAR MENU
             .profile-usermenu
               ul.nav
                 li.active
@@ -52,7 +53,7 @@ block content
                     i.glyphicon.glyphicon-ok
                     |               folllowers
 
-            // END MENU
+            //- END MENU
         .col-md-9
           .profile-content
             .container
@@ -63,8 +64,8 @@ block content
                 .col-md-6
                   .widget-area.no-padding.blank
                     .status-upload
-                      form
-                        textarea(placeholder='What are you doing right now?')
+                      form(action='/tweet', method='post')
+                        textarea(name='tweet' placeholder='What are you doing right now?')
                         ul
                           li
                             a(title='', data-toggle='tooltip', data-placement='bottom', data-original-title='Audio')

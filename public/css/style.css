@@ -1,8 +1,3 @@
-
-<<<<<<< HEAD
-=======
-
->>>>>>> parita
 .page-canvas {
   border-radius: 6px;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -17,7 +12,6 @@
   padding: 0 10px;
 }
 
-<<<<<<< HEAD
 /* footer css */
 social:hover {
      -webkit-transform: scale(1.1);
@@ -52,7 +46,7 @@ social:hover {
      color: #f39c12;
  }
  /* footer css over */
-=======
+
 /*welcome page */
 profile {
   margin: 20px 0;
@@ -382,4 +376,3 @@ fb-profile img.fb-image-lg{
     opacity: 0;
 
 }
->>>>>>> parita

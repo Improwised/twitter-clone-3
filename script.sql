@@ -15,14 +15,14 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -54,7 +54,9 @@ SET default_with_oids = false;
 
 CREATE TABLE tweet (
     id integer DEFAULT nextval('tweet_id_seq'::regclass) NOT NULL,
-    tweet character varying(140)
+    userid integer,
+    tweet character varying(140),
+    "time" timestamp without time zone DEFAULT now()
 );
 
 
@@ -93,7 +95,10 @@ ALTER TABLE users OWNER TO hemangi;
 -- Data for Name: tweet; Type: TABLE DATA; Schema: public; Owner: hemangi
 --
 
-COPY tweet (id, tweet) FROM stdin;
+COPY tweet (id, userid, tweet, "time") FROM stdin;
+20	2	cccccccc	2017-01-23 12:24:13.095342
+21	1	444444444	2017-01-23 12:24:51.578085
+22	3	xxyyyzzzz	2017-01-23 12:25:45.586938
 \.
 
 
@@ -101,7 +106,7 @@ COPY tweet (id, tweet) FROM stdin;
 -- Name: tweet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hemangi
 --
 
-SELECT pg_catalog.setval('tweet_id_seq', 1, true);
+SELECT pg_catalog.setval('tweet_id_seq', 22, true);
 
 
 --
