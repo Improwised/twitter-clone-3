@@ -47,7 +47,7 @@ router.post('/register', (req, res, next) => {
         next(error);
         return;
       }
-      res.redirect('/profilepictureupload');
+      res.redirect('/welcome');
     });
   }
 });
@@ -57,14 +57,84 @@ router.get('/login', (req, res, next) => {
 });
 
 router.get('/welcome', (req, res, next) => {
-  res.render('welcome');
+  const a = DB.builder()
+  .select()
+  .from("users")
+  .where("user_id NOT IN ?",
+  DB.builder()
+  .select()
+  .field("follower_id")
+  .from("follower")
+  .where("login_user_id = ?", 1))
+  .toParam();
+  DB.executeQuery(a, (error, follow) => {
+    if (error) {
+      next(error);
+      return;
+    }
+    res.render('welcome', {
+      users: follow.rows,
+    });
+  });
 });
 
 router.get('/profilechange', (req, res, next) => {
-  res.render('profilechange');
+  const query = DB.builder()
+  .select()
+  .field('username')
+  .field('follower_id')
+  .field('user_id')
+  .field('id')
+  .from('users', 'r')
+  .join(DB.builder()
+  .select()
+  .from('follower'), 'f', 'r.user_id = f.follower_id')
+  .toParam();
+  DB.executeQuery(query, (error, users) => {
+    if (error) {
+      next(error);
+      return;
+    }
+    res.render('profilechange', {
+      results: users.rows,
+    });
+  });
 });
 
 router.get('/profilepictureupload', (req, res, next) => {
   res.render('profilepictureupload');
+});
+
+router.post('/follower', (req, res, next) => {
+  const id = req.body.followerId;
+  const query = DB.builder()
+  .insert()
+  .into("follower")
+  .set("login_user_id", 1)
+  .set('follower_id', id)
+  .toParam();
+  DB.executeQuery(query, (error, results) => {
+    if (error) {
+      next(error);
+      return;
+    }
+    res.redirect('/welcome');
+  });
+});
+
+router.post('/unfollow', (req, res, next) => {
+  const id = req.body.followerId;
+  const query = DB.builder()
+  .delete()
+  .from("follower")
+  .where("id = ?", id)
+  .toParam();
+  DB.executeQuery(query, (error, results) => {
+    if (error) {
+      next(error);
+      return;
+    }
+    res.redirect("/profilechange");
+  });
 });
 module.exports = router;

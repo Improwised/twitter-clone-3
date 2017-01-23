@@ -20,10 +20,10 @@ block content
       .fb-profile-text
           h1 abcd
   .container
-    .row.profile
-      .col-md-3
+    .row
+      .col-sm-3
         .profile-usermenu
-          ul.nav
+          ul.nav.nav-pills.nav-stacked(data-spy='affix', data-offset-top='205')
             li.active
               a(href='#')
                 i.glyphicon.glyphicon-user
@@ -38,18 +38,35 @@ block content
                 i.glyphicon.glyphicon-ok
                 |               folllowers
 
-          // END MENU
-      .col-md-9
-      .profile-content
-        .container
-          .row
-            h3 Your tweets are here !!!!
+      .col-sm-6
+        .profile-content
+          .container
+            .row
+              h3 Your tweets are here !!!!
+
+              -for (var i = 0; i <= 10; i += 1) {
+
+              .media.block-update-card
+                a.pull-left(href='#')
+                  img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
+                .media-body.update-card-body
+                  h4.media-heading abcd
+                  p
+                    | This is the body content of this media.This can be
+                    | used as an update panel
+              -}
+
+      .col-md-3
+        .profile-content
+          .sidebar-menu
+            h3 Your followers!!!!
+          each rows in results
             .media.block-update-card
-              a.pull-left(href='#')
-                img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
-              .media-body.update-card-body
-                h4.media-heading abcd
-                p
-                  | This is the body content of this media.This can be
-                  | used as an update panel
+                a.pull-left(href='#')
+                  img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
+                .media-body.update-card-body
+                  h5.media-heading= rows.username
+                  form(method="post" action="/unfollow")
+                    input(type="hidden",name="followerId",value=rows.id)
+                    button.btn.btn-primary(type="submit") Unfollow
 

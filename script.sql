@@ -35,6 +35,40 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: follower; Type: TABLE; Schema: public; Owner: parita
+--
+
+CREATE TABLE follower (
+    id integer NOT NULL,
+    login_user_id integer,
+    follower_id integer
+);
+
+
+ALTER TABLE follower OWNER TO parita;
+
+--
+-- Name: untitled_table_id_seq; Type: SEQUENCE; Schema: public; Owner: parita
+--
+
+CREATE SEQUENCE untitled_table_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE untitled_table_id_seq OWNER TO parita;
+
+--
+-- Name: untitled_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: parita
+--
+
+ALTER SEQUENCE untitled_table_id_seq OWNED BY follower.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: parita
 --
 
@@ -71,10 +105,32 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
+-- Name: follower id; Type: DEFAULT; Schema: public; Owner: parita
+--
+
+ALTER TABLE ONLY follower ALTER COLUMN id SET DEFAULT nextval('untitled_table_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: parita
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Data for Name: follower; Type: TABLE DATA; Schema: public; Owner: parita
+--
+
+COPY follower (id, login_user_id, follower_id) FROM stdin;
+\.
+
+
+--
+-- Name: untitled_table_id_seq; Type: SEQUENCE SET; Schema: public; Owner: parita
+--
+
+SELECT pg_catalog.setval('untitled_table_id_seq', 1, false);
 
 
 --
@@ -90,6 +146,14 @@ COPY users (id, username, mobilenumber, email, password) FROM stdin;
 --
 
 SELECT pg_catalog.setval('users_id_seq', 1, false);
+
+
+--
+-- Name: follower untitled_table_pkey; Type: CONSTRAINT; Schema: public; Owner: parita
+--
+
+ALTER TABLE ONLY follower
+    ADD CONSTRAINT untitled_table_pkey PRIMARY KEY (id);
 
 
 --

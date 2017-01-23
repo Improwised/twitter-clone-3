@@ -1,6 +1,7 @@
 extends ./layouts/main.pug
 
 block content
+
   h1= title
   #wrapper
     .container.head
@@ -39,49 +40,45 @@ block content
             .profile-usermenu
               ul.nav
                 li.active
-                  a(href='#')
+                  a(href='/profilechange')
                     i.glyphicon.glyphicon-user
-                    |               change Profile picture
+                    |      Profile
 
                 li
                   a(href='#', target='_blank')
                     i.glyphicon.glyphicon-ok
-                    |               help
+                    |      help
                 li
                   a(href='#', target='_blank')
                     i.glyphicon.glyphicon-ok
-                    |               folllowers
+                    |    folllowers
 
             // END MENU
-        .col-md-9
+        .col-md-6
           .profile-content
             .container
               .row
                  i.glyphicon.glyphicon-pencil &nbsp;
                  | What's in your mind
               .row
-                .col-md-6
+                .col-md-5
                   .widget-area.no-padding.blank
                     .status-upload
                       form
-                        textarea(placeholder='What are you doing right now?')
-                        ul
-                          li
-                            a(title='', data-toggle='tooltip', data-placement='bottom', data-original-title='Audio')
-                              i.fa.fa-music
-                          li
-                            a(title='', data-toggle='tooltip', data-placement='bottom', data-original-title='Video')
-                              i.fa.fa-video-camera
-                          li
-                            a(title='', data-toggle='tooltip', data-placement='bottom', data-original-title='Sound Record')
-                              i.fa.fa-microphone
-                          li
-                            a(title='', data-toggle='tooltip', data-placement='bottom', data-original-title='Picture')
-                              i.fa.fa-picture-o
+                        textarea(name="tweet" placeholder='What are you doing right now?')
                         button.btn.btn-primary(type='submit')
                           i.fa.fa-share
                           |  tweet
                     // Status Upload
                   // Widget Area
 
-
+        .col-md-3(style ="padding-top :30px")
+          div(class="page-container")
+            .sidebar-menu
+              each rows in users
+                img.card(style = "width: 20rem; padding-top :20px").card-img-top(src='./images/cover.jpg')
+                .card-block
+                  h4.card-title= rows.username
+                  form(method="post" action="/follower")
+                    input(type="hidden",name="followerId",value=rows.user_id)
+                    button.btn.btn-primary(type="submit") follow
