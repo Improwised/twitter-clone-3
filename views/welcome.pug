@@ -12,8 +12,7 @@ block content
           a(href='#') Notification
         ul.nav.navbar-nav.navbar-right
           li
-            form(action='/logout' method='get')
-              input(type='submit' value='Logout')
+            a(href='/logout') Logout
           li
             a(href='#') Link
             //- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens
@@ -46,16 +45,16 @@ block content
                     |      Profile
 
                 li
-                  a(href='#', target='_blank')
+                  a(href='/welcome')
                     i.glyphicon.glyphicon-ok
-                    |      help
+                    |      home
                 li
                   a(href='#', target='_blank')
                     i.glyphicon.glyphicon-ok
                     |    folllowers
 
             //- END MENU
-        .col-md-9
+        .col-md-6
           .profile-content
             .container
               .row

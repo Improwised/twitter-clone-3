@@ -1,6 +1,7 @@
 extends ./layouts/main.pug
 
 block content
+  p=tweet
   h1= title
   .container.head
       ul.nav.nav-tabs
@@ -10,7 +11,7 @@ block content
           a(href='#') Notification
         ul.nav.navbar-nav.navbar-right
           li
-            a(href='#') Logout
+            a(href='/logout') Logout
           li
             a(href='#') Link
   .container
@@ -18,7 +19,7 @@ block content
       img.fb-image-lg(align='left', src='./images/cover.jpg', alt='Profile image example' width ="100%")
       img.fb-image-profile.thumbnail(align='left', src='http://lorempixel.com/180/180/people/8/', alt='Profile image example')
       .fb-profile-text
-          h1 abcd
+          h1 #{results.username}
   .container
     .row
       .col-sm-3
@@ -30,37 +31,33 @@ block content
                 |               change Profile picture
 
             li
-              a(href='#', target='_blank')
+              a(href='/welcome')
                 i.glyphicon.glyphicon-ok
-                |               help
+                |               home
             li
-              a(href='#', target='_blank')
+              a(href='#')
                 i.glyphicon.glyphicon-ok
                 |               folllowers
 
-      .col-sm-6
+      .col-md-6
         .profile-content
           .container
             .row
               h3 Your tweets are here !!!!
 
-              -for (var i = 0; i <= 10; i += 1) {
-
-              .media.block-update-card
-                a.pull-left(href='#')
-                  img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
-                .media-body.update-card-body
-                  h4.media-heading abcd
-                  p
-                    | This is the body content of this media.This can be
-                    | used as an update panel
-              -}
+              each i in tweets
+                .media.block-update-card
+                  a.pull-left(href='#')
+                    img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
+                  .media-body.update-card-body
+                    h4.media-heading #{results.username} &nbsp; &middot; &nbsp; #{i.time}
+                    p= i.tweet
 
       .col-md-3
         .profile-content
           .sidebar-menu
             h3 Your followers!!!!
-          each rows in results
+          each rows in users
             .media.block-update-card
                 a.pull-left(href='#')
                   img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")

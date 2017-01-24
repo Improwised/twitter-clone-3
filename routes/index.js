@@ -280,26 +280,63 @@ router.get('/login', (req, res) => {
   // });
 
 router.get('/profilechange', (req, res, next) => {
-  const query = DB.builder()
-  .select()
-  .field('username')
-  .field('follower_id')
-  .field('user_id')
-  .field('id')
-  .from('users', 'r')
-  .join(DB.builder()
-  .select()
-  .from('follower'), 'f', 'r.user_id = f.follower_id')
-  .toParam();
-  DB.executeQuery(query, (error, users) => {
-    if (error) {
-      next(error);
-      return;
-    }
-    res.render('profilechange', {
-      results: users.rows,
+  const session = req.session;
+  let query;
+  if (session.username) {
+    query = DB.builder()
+    .select()
+    .from('users')
+    .where('username = ?', session.username)
+    .toParam();
+
+    console.log('-->', query);
+
+    DB.executeQuery(query, (error, results) => {
+      if (error) {
+        next(error);
+        return;
+      }
+      query = DB.builder()
+      .select()
+      .field('username')
+      .field('follower_id')
+      .field('user_id')
+      .field('id')
+      .from('users', 'r')
+      .join(DB.builder()
+      .select()
+      .from('follower'), 'f', 'r.user_id = f.follower_id')
+      .toParam();
+      DB.executeQuery(query, (error, users) => {
+        if (error) {
+          next(error);
+          return;
+        }
+        query = DB.builder()
+        .select()
+        .field('tweet')
+        .field('time')
+        .from('tweet')
+        .where('userid = ?', session.user_id)
+        .toParam();
+        console.log(query);
+        DB.executeQuery(query, (error, tweets) => {
+          if (error) {
+            next(error);
+            return;
+          }
+          // console.log('tweet---->' + tweet);
+          res.render('profilechange', {
+            tweets: tweets.rows,
+            users: users.rows,
+            results: results.rows[0],
+          });
+        });
+      });
     });
-  });
+  } else {
+    res.write('<h1>Please login first.</h1>');
+  }
 });
 
 router.get('/profilepictureupload', (req, res) => {
