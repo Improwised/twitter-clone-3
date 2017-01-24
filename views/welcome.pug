@@ -45,9 +45,9 @@ block content
                     |      Profile
 
                 li
-                  a(href='#', target='_blank')
+                  a(href='/welcome', target='_blank')
                     i.glyphicon.glyphicon-ok
-                    |      help
+                    |      home
                 li
                   a(href='#', target='_blank')
                     i.glyphicon.glyphicon-ok
@@ -74,6 +74,8 @@ block content
 
         .col-md-3(style ="padding-top :30px")
           div(class="page-container")
+            i.glyphicon.glyphicon-user &nbsp;
+            | People you may know
             .sidebar-menu
               each rows in users
                 img.card(style = "width: 20rem; padding-top :20px").card-img-top(src='./images/cover.jpg')
