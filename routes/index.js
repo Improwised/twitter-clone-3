@@ -228,6 +228,7 @@ router.get('/welcome', (req, res, next) => {
       query = DB.builder()
       .select()
       .from('users')
+      .where('user_id != ?', session.user_id)
       .where("user_id NOT IN ?",
         DB.builder()
         .select()
