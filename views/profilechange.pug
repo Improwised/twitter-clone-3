@@ -16,9 +16,10 @@ block content
   .container
     .fb-profile
       img.fb-image-lg(align='left', src='./images/cover.jpg', alt='Profile image example' width ="100%")
-      img.fb-image-profile.thumbnail(align='left', src='http://lorempixel.com/180/180/people/8/', alt='Profile image example')
-      .fb-profile-text
-          h1 abcd
+      each i in results
+        img.fb-image-profile.thumbnail(align='left', src='./images/'+ i.image)
+        .fb-profile-text
+          h1= i.username
   .container
     .row
       .col-sm-3
@@ -48,7 +49,7 @@ block content
 
               .media.block-update-card
                 a.pull-left(href='#')
-                  img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
+                  img.media-object.update-card-MDimentions(src='./images/'+ i.image, height = "50px" width="50px")
                 .media-body.update-card-body
                   h4.media-heading abcd
                   p
@@ -60,7 +61,7 @@ block content
         .profile-content
           .sidebar-menu
             h3 Your followers!!!!
-          each rows in results
+          each rows in result
             .media.block-update-card
                 a.pull-left(href='#')
                   img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
