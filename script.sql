@@ -31,6 +31,37 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 SET search_path = public, pg_catalog;
 
 --
+-- Name: follower_id_seq; Type: SEQUENCE; Schema: public; Owner: hemangi
+--
+
+CREATE SEQUENCE follower_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE follower_id_seq OWNER TO hemangi;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: follower; Type: TABLE; Schema: public; Owner: hemangi
+--
+
+CREATE TABLE follower (
+    id integer DEFAULT nextval('follower_id_seq'::regclass) NOT NULL,
+    login_user_id integer,
+    follower_id integer
+);
+
+
+ALTER TABLE follower OWNER TO hemangi;
+
+--
 -- Name: tweet_id_seq; Type: SEQUENCE; Schema: public; Owner: hemangi
 --
 
@@ -43,10 +74,6 @@ CREATE SEQUENCE tweet_id_seq
 
 
 ALTER TABLE tweet_id_seq OWNER TO hemangi;
-
-SET default_tablespace = '';
-
-SET default_with_oids = false;
 
 --
 -- Name: tweet; Type: TABLE; Schema: public; Owner: hemangi
@@ -81,7 +108,7 @@ ALTER TABLE users_id_seq OWNER TO hemangi;
 --
 
 CREATE TABLE users (
-    id integer DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
+    user_id integer DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
     username text,
     mobilenumber integer,
     email text,
@@ -90,6 +117,22 @@ CREATE TABLE users (
 
 
 ALTER TABLE users OWNER TO hemangi;
+
+--
+-- Data for Name: follower; Type: TABLE DATA; Schema: public; Owner: hemangi
+--
+
+COPY follower (id, login_user_id, follower_id) FROM stdin;
+1	1	2
+\.
+
+
+--
+-- Name: follower_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hemangi
+--
+
+SELECT pg_catalog.setval('follower_id_seq', 1, true);
+
 
 --
 -- Data for Name: tweet; Type: TABLE DATA; Schema: public; Owner: hemangi
@@ -113,7 +156,7 @@ SELECT pg_catalog.setval('tweet_id_seq', 22, true);
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: hemangi
 --
 
-COPY users (id, username, mobilenumber, email, password) FROM stdin;
+COPY users (user_id, username, mobilenumber, email, password) FROM stdin;
 1	abc	332	abc@abc.com	123
 2	xyz	454	x@x.com	12
 3	hemangi	4545	hemangi@improwised.com	34

@@ -46,7 +46,7 @@ router.post('/login', (req, res, next) => {
         if (results1.rowCount) {
           console.log(username);
           req.session.username = username;
-          req.session.user_id = results1.rows[0].id;
+          req.session.user_id = results1.rows[0].user_id;
           console.log(req.session.user_id);
           console.log(req.session);
           console.log('Log in successfully');
@@ -155,7 +155,7 @@ router.post('/register', (req, res, next) => {
         next(error);
         return;
       }
-      res.render('register');
+      res.redirect('/welcome');
     });
   // res.send('Hello ' + username + ' Phone ' + mobileno + ' Email ' + email);
   }
@@ -210,21 +210,43 @@ router.get('/logout', (req, res) => {
 
 router.get('/welcome', (req, res, next) => {
   const session = req.session;
+  let query;
   if (session.username) {
-    const query = DB.builder()
+    query = DB.builder()
     .select()
     .from('users')
     .where('username = ?', session.username)
     .toParam();
 
     console.log('-->', query);
+
     DB.executeQuery(query, (error, results) => {
       if (error) {
         next(error);
         return;
       }
-      res.render('welcome', {
-        results: results.rows[0],
+      query = DB.builder()
+      .select()
+      .from('users')
+      .where("user_id NOT IN ?",
+        DB.builder()
+        .select()
+        .field("follower_id")
+        .from("follower")
+        .where("login_user_id = ?", 1))
+      .toParam();
+
+      console.log('-->', query);
+
+      DB.executeQuery(query, (error, follow) => {
+        if (error) {
+          next(error);
+          return;
+        }
+        res.render('welcome', {
+          users: follow.rows,
+          results: results.rows[0],
+        });
       });
     });
   } else {
@@ -236,11 +258,85 @@ router.get('/login', (req, res) => {
   res.render('login');
 });
 
-router.get('/profilechange', (req, res) => {
-  res.render('profilechange');
+  // const a = DB.builder()
+  // .select()
+  // .from("users")
+  // .where("user_id NOT IN ?",
+  // DB.builder()
+  // .select()
+  // .field("follower_id")
+  // .from("follower")
+  // .where("login_user_id = ?", 1))
+  // .toParam();
+  // DB.executeQuery(a, (error, follow) => {
+  //   if (error) {
+  //     next(error);
+  //     return;
+  //   }
+  //   res.render('welcome', {
+  //     users: follow.rows,
+  //   });
+  // });
+
+router.get('/profilechange', (req, res, next) => {
+  const query = DB.builder()
+  .select()
+  .field('username')
+  .field('follower_id')
+  .field('user_id')
+  .field('id')
+  .from('users', 'r')
+  .join(DB.builder()
+  .select()
+  .from('follower'), 'f', 'r.user_id = f.follower_id')
+  .toParam();
+  DB.executeQuery(query, (error, users) => {
+    if (error) {
+      next(error);
+      return;
+    }
+    res.render('profilechange', {
+      results: users.rows,
+    });
+  });
 });
 
 router.get('/profilepictureupload', (req, res) => {
   res.render('profilepictureupload');
 });
+
+router.post('/follower', (req, res, next) => {
+  const id = req.body.followerId;
+  const session = req.session;
+  const query = DB.builder()
+  .insert()
+  .into("follower")
+  .set("login_user_id", session.user_id)
+  .set('follower_id', id)
+  .toParam();
+  DB.executeQuery(query, (error, results) => {
+    if (error) {
+      next(error);
+      return;
+    }
+    res.redirect('/welcome');
+  });
+});
+
+router.post('/unfollow', (req, res, next) => {
+  const id = req.body.followerId;
+  const query = DB.builder()
+  .delete()
+  .from("follower")
+  .where("id = ?", id)
+  .toParam();
+  DB.executeQuery(query, (error, results) => {
+    if (error) {
+      next(error);
+      return;
+    }
+    res.redirect("/profilechange");
+  });
+});
+
 module.exports = router;
