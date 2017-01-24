@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 var session = require('express-session')
-
+//const busboybodyParser = require('busboy-body-parser');
 const expressValidator = require('express-validator');
 
 // Load dotenv config
@@ -36,6 +36,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressValidator());
+
 
 app.use(session({
  secret: 'password',

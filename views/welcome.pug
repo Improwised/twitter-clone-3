@@ -17,71 +17,91 @@ block content
             a(href='#') Link
             //- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens
     .container
-      .row.profile
-        .col-md-3
-          .profile-sidebar
-            //- SIDEBAR USERPIC
-            .profile-userpic
-              img.img-responsive(src='./images/cover.jpg', alt='')
-            //- END SIDEBAR USERPIC
-            //- SIDEBAR USER TITLE
-            .profile-usertitle
-              .profile-usertitle-name
-                | #{results.username}
-              .profile-usertitle-job
-                | Developer
-            //- END SIDEBAR USER TITLE
-            //- SIDEBAR BUTTONS
-            .profile-userbuttons
-              button.btn.btn-primary.btn-sm(type='button') Follow
-              button.btn.btn-primary.btn-sm(type='button') Unfollow
-            //- END SIDEBAR BUTTONS
-            //- SIDEBAR MENU
-            .profile-usermenu
-              ul.nav
-                li.active
-                  a(href='/profilechange')
-                    i.glyphicon.glyphicon-user
-                    |      Profile
+      h1= title
+      .page-canvas
+        .signin-wrapper
+          .row.profile
+            .col-sm-3
+              .profile-sidebar
+                //- SIDEBAR USERPIC
+                .profile-userpic
+                  img.img-responsive(src='./images/cover.jpg', alt='')
+                //- END SIDEBAR USERPIC
+                //- SIDEBAR USER TITLE
+                .profile-usertitle
+                  .profile-usertitle-name
+                    | #{results.username}
+                  .profile-usertitle-job
+                    | Developer
+                //- END SIDEBAR USER TITLE
+                //- SIDEBAR BUTTONS
+                .profile-userbuttons
+                  button.btn.btn-primary.btn-sm(type='button') Follow
+                  button.btn.btn-primary.btn-sm(type='button') Unfollow
+                //- END SIDEBAR BUTTONS
+                //- SIDEBAR MENU
+                .profile-usermenu
+                  ul.nav
+                    li
+                      a(href='/profilechange')
+                        i.glyphicon.glyphicon-user
+                        |      Profile
 
-                li
-                  a(href='/welcome')
-                    i.glyphicon.glyphicon-ok
-                    |      home
-                li
-                  a(href='#', target='_blank')
-                    i.glyphicon.glyphicon-ok
-                    |    folllowers
+                    li.active
+                      a(href='/welcome')
+                        i.glyphicon.glyphicon-home
+                        |      home
+                    li
+                      a(href='#', target='_blank')
+                        i.glyphicon.glyphicon-ok
+                        |    folllowers
 
-            //- END MENU
-        .col-md-6
-          .profile-content
-            .container
-              .row
-                 i.glyphicon.glyphicon-pencil &nbsp;
-                 | What's in your mind
-              .row
-                .col-md-5
-                  .widget-area.no-padding.blank
-                    .status-upload
+                //- END MENU
+            .col-sm-6
+              .profile-content
+                .container
+                  .row
+                     i.glyphicon.glyphicon-pencil &nbsp;
+                     | What's in your mind
+                  .row
+                    .col-sm-5
+                      .widget-area.no-padding.blank
+                        .status-upload
 
-                      form(action='/tweet', method='post')
+                          form(action='/tweet', method='post')
 
-                        textarea(name='tweet' placeholder='What are you doing right now?')
+                            textarea(name='tweet' placeholder='What are you doing right now?')
 
-                        button.btn.btn-primary(type='submit')
-                          i.fa.fa-share
-                          |  tweet
-                    // Status Upload
-                  // Widget Area
+                            button.btn.btn-primary(type='submit')
+                              i.fa.fa-share
+                              |  tweet
 
-        .col-md-3(style ='padding-top :30px')
-          div(class='page-container')
-            .sidebar-menu
-              each rows in users
-                img.card(style = 'width: 20rem; padding-top :20px').card-img-top(src='./images/cover.jpg')
-                .card-block
-                  h4.card-title= rows.username
-                  form(method='post', action='/follower')
-                    input(type='hidden',name='followerId',value=rows.user_id)
-                    button.btn.btn-primary(type='submit') follow
+                  .row
+                    .col-sm-5
+                      p &nbsp;
+                  .row
+                    .col-sm-5
+                      each row in tweets
+                        .media.block-update-card
+                          a.pull-left(href='#')
+                            img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
+                          .media-body.update-card-body
+                            h5.media-heading=row.username + ' · ' + row.time
+                            p= row.tweet
+                            a(href='/deletetweet/' + row.id)
+                              i.glyphicon.glyphicon-trash
+
+
+            .col-sm-3(style ="padding-top :30px")
+              div(class="page-container")
+                i.glyphicon.glyphicon-user &nbsp;
+                | People you may know
+
+                .sidebar-menu
+                  each rows in users
+                    img.card.img-fluid.img-thumbnail(style = 'width: 20rem; padding-top :20px').card-img-top(src='./images/cover.jpg')
+                    .card-block
+                      h4.card-title= rows.username
+                      form(method='post', action='/follower')
+                        input(type='hidden',name='followerId',value=rows.user_id)
+                        button.btn.btn-primary(type='submit') follow

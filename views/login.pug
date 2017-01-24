@@ -10,6 +10,7 @@ block content
         a(href='#') About us
 
   .container
+    h1= title
     form.form-horizontal.page-canvas(action='/login' , method="post")
       .signin-wrapper
         .form-group
@@ -31,4 +32,5 @@ block content
                   input(type='checkbox' value='1' name='remember_me' checked='checked')
                   | Remember me
                   span.separator &nbsp;&middot;&nbsp;
-                  a(href='/retrive_password' rel='noopener') Forgot password?
+                  form(action='/retrive_password', method='post')
+                    a.button(type='submit') Forgot password?
