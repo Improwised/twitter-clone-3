@@ -3,50 +3,65 @@ extends ./layouts/main.pug
 block content
   h1= title
   script(src = "./js/uploadfile.js")
-  .container.head
-      ul.nav.nav-tabs
-        li.active
-          a(href='#') Twitter
+  .container.head.navbar-default.navbar-fixed-top(style ="backgroung-color : #ffff")
+    .col-sm-12
+     ul.nav.nav-tabs
         li
-          a(href='#') Notification
-        ul.nav.navbar-nav.navbar-right
-          li
-            a(href='#') Logout
-          li
-            a(href='#') Link
+          a(href='/welcome')
+            i.glyphicon.glyphicon-home(style ="color : #00aced;") &nbsp;
+              | Home
+        li.active
+          a(href='/profilechange')
+            i.glyphicon.glyphicon-user(style ="color : #00aced;") &nbsp;
+                | Profile
+
+        li.navbar-right
+          a(href='/logout')
+            i.glyphicon.glyphicon-off(style ="color : #00aced;") &nbsp;
+                  | Logout
+
+  .container.head(style = "margin : 80px 0px 0px 115px")
+    .page-canvas
+      .signin-wrapper
+        .row
+          .col-md-12(style ="text-align : center")
+            h3(style ="color : #00aced;") Edit your profile here !!!
 
   .container
-    .row
-      .col-md-6
-        h3 Edit your profile
-        form(method='post', enctype='multipart/form-data', action='/editprofile',class='form-horizontal')
-          div(class='form-content' text-align="center")
-          div(class='form-group')
-            div(class='col-sm-4')
-              input(type="text", name="username", class='form-control form-control-inline', placeholder='username')
-          div(class='form-group')
-            div(class='col-sm-4')
-              input(type="number", name="mobileno", class='form-control form-control-inline', placeholder='Mobile Number')
-          div(class='form-group')
-            div(class='col-sm-4')
-              input(type="text", name="email", class='form-control form-control-inline', placeholder='email')
-          div(class='form-group')
-            div(class='col-sm-4')
-              input(type="password", name="password", class='form-control form-control-inline', placeholder='old password')
-          div(class='form-group')
-            div(class='col-sm-4')
-              input(type="password", name="confirmpassword", class='form-control form-control-inline' placeholder='new password')
-          div(class="form-group")
-            .col-sm-4
-              button.btn.btn-primary(type='submit') change profile
+    .form-horizontal.page-canvas
+      .signin-wrapper
+        .row(style = "margin : 20px 20px 20px 0px")
+          .col-md-4
+             each images in results
+              img.thumbnail(src='./images/'+ images.image ,width ="200px" height="200px")
 
-      .col-md-6
-        h3 update your profile picture
-          img(src='http://lorempixel.com/180/180/people/9/' ,width ="285px" height="300px")
+              form(method='post', enctype='multipart/form-data', action='/profilepictureupload')
+                input(type='file', name='thumbnail' ,style = "margin : -5px 0px 10px 0px ;color : #00aced;" )
+                input(class="btn btn-info" type='submit',name="submit")
 
-        form(method='post', enctype='multipart/form-data', action='/profilepictureupload')
-          input(type='file', name='thumbnail')
-          input(class="btn btn-primary" type='submit',name="submit")
+          .col-md-8
+            each data in results
+              form(method='post', enctype='multipart/form-data', action='/editprofile',class='form-horizontal')
+                div(class='form-content' text-align="center")
+                div(class='form-group')
+                  div(class='col-sm-8')
+                    input(type="text", name="username", class='form-control form-control-inline', value = data.username)
+                div(class='form-group')
+                  div(class='col-sm-8')
+                    input(type="number", name="mobileno", class='form-control form-control-inline', value = data.mobilenumber)
+                div(class='form-group')
+                  div(class='col-sm-8')
+                    input(type="text", name="email", class='form-control form-control-inline', value = data.email)
+                div(class='form-group')
+                  div(class='col-sm-8')
+                    input(type="password", name="password", class='form-control form-control-inline', placeholder='old password')
+                div(class='form-group')
+                  div(class='col-sm-8')
+                    input(type="password", name="confirmpassword", class='form-control form-control-inline' placeholder='new password')
+                div(class="form-group")
+                  .col-sm-8
+                    button.btn.btn-info(type='submit') change profile
+
 
 
 

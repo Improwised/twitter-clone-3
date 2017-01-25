@@ -235,7 +235,7 @@ router.get('/logout', (req, res) => {
 router.get('/welcome', (req, res, next) => {
   const session = req.session;
   let query;
-  if (session.username) {
+  if (session.user_id) {
 
     query = DB.builder()
     .select()
@@ -346,6 +346,7 @@ router.get('/profilechange', (req, res, next) => {
         .field('username')
         .field('image')
         .field('user_id')
+        .field('id')
         .from('tweet' , 't')
         .join(DB.builder()
         .select()
@@ -373,7 +374,25 @@ router.get('/profilechange', (req, res, next) => {
 });
 
 router.get('/profilepictureupload', (req, res) => {
-  res.render('profilepictureupload');
+  const session = req.session;
+  let query;
+  if (session.username) {
+
+    query = DB.builder()
+    .select()
+    .from('users')
+    .where('user_id = ?', session.user_id)
+    .toParam();
+      DB.executeQuery(query, (error, results) => {
+      if (error) {
+        next(error);
+        return;
+      }
+  res.render('profilepictureupload', {
+            results: results.rows,
+          });
+});
+}
 });
 
 router.post('/follower', (req, res, next) => {
@@ -409,7 +428,9 @@ router.post('/unfollow', (req, res, next) => {
     res.redirect("/profilechange");
   });
 });
+router.get('/profilepictureupload', (req, res, next) => {
 
+});
 router.post('/profilepictureupload', (req, res, next) => {
   const session = req.session;
   console.log(req.files);

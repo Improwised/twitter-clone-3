@@ -4,18 +4,22 @@ block content
 
   h1= title
   #wrapper
-    .container.head
+    .container.head.navbar-default.navbar-fixed-top(style ="backgroung-color : #ffff")
       ul.nav.nav-tabs
         li.active
-          a(href='#') Twitter
+          a(href='/welcome')
+            i.glyphicon.glyphicon-home(style ="color : #00aced;") &nbsp;
+              | Home
         li
-          a(href='#') Notification
-        ul.nav.navbar-nav.navbar-right
-          li
-            a(href='/logout') Logout
-          li
-            a(href='#') Link
-            //- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens
+          a(href='/profilechange')
+            i.glyphicon.glyphicon-user(style ="color : #00aced;") &nbsp;
+                | Profile
+
+        li.navbar-right
+          a(href='/logout')
+            i.glyphicon.glyphicon-off(style ="color : #00aced;") &nbsp;
+                  | Logout
+
     .container
       h1= title
       .page-canvas
@@ -28,30 +32,31 @@ block content
                   .profile-userpic
                     img.img-responsive(src='./images/'+ profile.image, alt='')
                   .profile-usertitle
-                    .profile-usertitle-name= profile.username
+                    .profile-usertitle-name(style ="color : #00aced;")= profile.username
 
                 .profile-usermenu
                   ul.nav
                     li
                       a(href='/profilechange')
-                        i.glyphicon.glyphicon-user
-                        |      Profile
+                        i.glyphicon.glyphicon-user(style ="color : #00aced;")
+                          |      Profile
                     li.active
                       a(href='/welcome')
-                        i.glyphicon.glyphicon-home
-                        |      home
+                        i.glyphicon.glyphicon-home(style ="color : #00aced;")
+                          |      home
                     li
                       a(href='#', target='_blank')
-                        i.glyphicon.glyphicon-ok
-                        |    folllowers
+                        i.glyphicon.glyphicon-ok(style ="color : #00aced;")
+                          |    folllowers
 
                 //- END MENU
             .col-sm-6
               .profile-content
                 .container
                   .row
-                     i.glyphicon.glyphicon-pencil &nbsp;
-                     | What's in your mind
+                    p(style ="color : #00aced;")
+                      i.glyphicon.glyphicon-pencil &nbsp;
+                      | What's in your mind ??
                   .row
                     .col-sm-5
                       .widget-area.no-padding.blank
@@ -61,7 +66,7 @@ block content
 
                             textarea(name='tweet' placeholder='What are you doing right now?')
 
-                            button.btn.btn-primary(type='submit')
+                            button.btn.btn-info(type='submit')
                               i.fa.fa-share
                               |  tweet
 
@@ -75,21 +80,22 @@ block content
                           a.pull-left(href='#')
                             img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
                           .media-body.update-card-body
-                            h5.media-heading=row.username + ' · ' + row.time
+                            h5.media-heading(style ="color : #00aced;")=row.username + ' · ' + row.time
                             p= row.tweet
                             a(href='/deletetweet/' + row.id)
-                              i.glyphicon.glyphicon-trash
+                              i.glyphicon.glyphicon-trash(style ="color : #00aced;")
 
             .col-sm-3(style ="padding-top :30px")
               div(class="page-container")
-                i.glyphicon.glyphicon-user &nbsp;
-                | People you may know
-
+                p(style ="color : #00aced;")
+                  i.glyphicon.glyphicon-user &nbsp;
+                  | People you may know
                 .sidebar-menu
                   each rows in follow
-                    img.card.img-fluid.img-thumbnail(style = 'width: 20rem; padding-top :20px').card-img-top(src='./images/cover.jpg')
+                    p &nbsp;
+                    img.img-fluid.thumbnail.card-img-top(src='./images/'+ rows.image ,height="150px" ,width="150px")
                     .card-block
-                      h4.card-title= rows.username
+                      h5.card-title(style ="color : #00aced;")= rows.username
                       form(method='post', action='/follower')
                         input(type='hidden',name='followerId',value=rows.user_id)
-                        button.btn.btn-primary(type='submit') follow
+                        button.btn.btn-info(type='submit') follow

@@ -3,68 +3,73 @@ extends ./layouts/main.pug
 block content
   p=tweet
   h1= title
-  .container.head
+  .container.head.navbar-default.navbar-fixed-top(style ="backgroung-color : #ffff")
       ul.nav.nav-tabs
-        li.active
-          a(href='#') Twitter
         li
-          a(href='#') Notification
-        ul.nav.navbar-nav.navbar-right
-          li
-            a(href='/logout') Logout
-          li
-            a(href='#') Link
+          a(href='/welcome')
+            i.glyphicon.glyphicon-home(style ="color : #00aced;") &nbsp;
+              | Home
+        li.active
+          a(href='/profilechange')
+            i.glyphicon.glyphicon-user(style ="color : #00aced;") &nbsp;
+                | Profile
+
+        li.navbar-right
+          a(href='/logout')
+            i.glyphicon.glyphicon-off(style ="color : #00aced;") &nbsp;
+                  | Logout
   .container
     .fb-profile
       img.fb-image-lg(align='left', src='./images/cover.jpg', alt='Profile image example' width ="100%")
       each i in results
         img.fb-image-profile.thumbnail(align='left', src='./images/'+ i.image)
         .fb-profile-text
-          h1= i.username
+          h1(style ="color : #00aced;")= i.username
   .container
-    .row
-      .col-sm-3
-        .profile-usermenu
-          ul.nav.nav-pills.nav-stacked(data-spy='affix', data-offset-top='205')
-            li.active
-              a(href='/profilepictureupload')
-                i.glyphicon.glyphicon-user
-                |               change Profile picture
+    .page-canvas
+      .row
+        .col-sm-3
+          .profile-usermenu
+            ul.nav.nav-pills.nav-stacked(data-spy='affix', data-offset-top='205')
+              li.active
+                a(href='/profilepictureupload')
+                  i.glyphicon.glyphicon-pencil(style ="color : #00aced;")
+                    |               edit Profile
 
-            li
-              a(href='/welcome')
-                i.glyphicon.glyphicon-home
-                |               home
-            li
-              a(href='#')
-                i.glyphicon.glyphicon-ok
-                |               folllowers
+              li
+                a(href='/welcome')(style ="color : #00aced;")
+                  i.glyphicon.glyphicon-home
+                    |               home
+              li
+                a(href='#')
+                  i.glyphicon.glyphicon-ok(style ="color : #00aced;")
+                    |               folllowers
 
-      .col-md-6
-        .profile-content
-          .container
-            .row
-              h3 Your tweets are here !!!!
-              each row in tweets
+        .col-sm-6
+          .profile-content
+            .container
+              .row
+                h4(style ="color : #00aced;") Your tweets are here !!!!
+                each row in tweets
+                  .media.block-update-card
+                    a.pull-left(href='#')
+                      img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
+                    .media-body.update-card-body
+                      h5.media-heading(style ="color : #00aced;")=row.username + ' · ' + row.time
+                      p= row.tweet
+                      a(href='/deletetweet/' + row.id)
+                        i.glyphicon.glyphicon-trash
+
+        .col-sm-3
+          .profile-content
+            .sidebar-menu
+              h4(style ="color : #00aced;") Your followers!!!!
+              each rows in users
                 .media.block-update-card
-                  a.pull-left(href='#')
-                    img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
-                  .media-body.update-card-body
-                    h5.media-heading=row.username + ' · ' + row.time
-                    p= row.tweet
-                    a(href='/deletetweet/' + row.id)
-                      i.glyphicon.glyphicon-trash
-
-      .col-md-3
-        .profile-content
-          .sidebar-menu
-            h3 Your followers!!!!
-            each rows in users
-              .media.block-update-card
-                  a.pull-left(href='#')
-                    img.media-object.update-card-MDimentions(src='./images/'+ rows.image, height = "50px" width="50px")
-                  .media-body.update-card-body
-                    h5.media-heading= rows.username
-                    form(method="post" action="/unfollow")
-                      input(type="hidden",name="followerId",value=rows.id)
-                      button.btn.btn-primary(type="submit") Unfollow
+                    a.pull-left(href='#')
+                      img.media-object.update-card-MDimentions(src='./images/'+ rows.image, height = "60px" width="60px")
+                    .media-body.update-card-body
+                      h5.media-heading(style ="color : #00aced")= rows.username
+                      form(method="post" action="/unfollow")
+                        input(type="hidden",name="followerId",value=rows.id)
+                        button.btn.btn-info(type="submit") Unfollow
