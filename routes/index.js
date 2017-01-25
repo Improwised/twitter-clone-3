@@ -343,9 +343,14 @@ router.get('/profilechange', (req, res, next) => {
         .select()
         .field('tweet')
         .field('time')
-        .field('id')
-        .from('tweet')
-        .where('userid = ?', session.user_id)
+        .field('username')
+        .field('image')
+        .field('user_id')
+        .from('tweet' , 't')
+        .join(DB.builder()
+        .select()
+        .from('users'), 'u' , 't.userid = u.user_id')
+        .where('user_id = ? ', session.user_id)
         .toParam();
         console.log(query);
         DB.executeQuery(query, (error, tweets) => {
@@ -353,12 +358,11 @@ router.get('/profilechange', (req, res, next) => {
             next(error);
             return;
           }
-          // console.log(tweets.rows);
-          // console.log('tweet---->' + tweet);
+
           res.render('profilechange', {
             tweets: tweets.rows,
             users: users.rows,
-            results: results.rows[0],
+            results: results.rows,
           });
         });
       });

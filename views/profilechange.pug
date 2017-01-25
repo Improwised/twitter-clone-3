@@ -17,7 +17,7 @@ block content
   .container
     .fb-profile
       img.fb-image-lg(align='left', src='./images/cover.jpg', alt='Profile image example' width ="100%")
-      each i in users
+      each i in results
         img.fb-image-profile.thumbnail(align='left', src='./images/'+ i.image)
         .fb-profile-text
           h1= i.username
@@ -48,9 +48,9 @@ block content
               each row in tweets
                 .media.block-update-card
                   a.pull-left(href='#')
-                    img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
+                    img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
                   .media-body.update-card-body
-                    h5.media-heading #{results.username} &nbsp; &middot; &nbsp; #{row.time}
+                    h5.media-heading=row.username + ' · ' + row.time
                     p= row.tweet
                     a(href='/deletetweet/' + row.id)
                       i.glyphicon.glyphicon-trash
@@ -62,7 +62,7 @@ block content
             each rows in users
               .media.block-update-card
                   a.pull-left(href='#')
-                    img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
+                    img.media-object.update-card-MDimentions(src='./images/'+ rows.image, height = "50px" width="50px")
                   .media-body.update-card-body
                     h5.media-heading= rows.username
                     form(method="post" action="/unfollow")

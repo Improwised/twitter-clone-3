@@ -30,39 +30,25 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 SET search_path = public, pg_catalog;
 
---
--- Name: follower_id_seq; Type: SEQUENCE; Schema: public; Owner: hemangi
---
-
-CREATE SEQUENCE follower_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE follower_id_seq OWNER TO hemangi;
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: follower; Type: TABLE; Schema: public; Owner: hemangi
+-- Name: follower; Type: TABLE; Schema: public; Owner: parita
 --
 
 CREATE TABLE follower (
-    id integer DEFAULT nextval('follower_id_seq'::regclass) NOT NULL,
+    id integer NOT NULL,
     login_user_id integer,
     follower_id integer
 );
 
 
-ALTER TABLE follower OWNER TO hemangi;
+ALTER TABLE follower OWNER TO parita;
 
 --
--- Name: tweet_id_seq; Type: SEQUENCE; Schema: public; Owner: hemangi
+-- Name: tweet_id_seq; Type: SEQUENCE; Schema: public; Owner: parita
 --
 
 CREATE SEQUENCE tweet_id_seq
@@ -73,10 +59,10 @@ CREATE SEQUENCE tweet_id_seq
     CACHE 1;
 
 
-ALTER TABLE tweet_id_seq OWNER TO hemangi;
+ALTER TABLE tweet_id_seq OWNER TO parita;
 
 --
--- Name: tweet; Type: TABLE; Schema: public; Owner: hemangi
+-- Name: tweet; Type: TABLE; Schema: public; Owner: parita
 --
 
 CREATE TABLE tweet (
@@ -87,10 +73,47 @@ CREATE TABLE tweet (
 );
 
 
-ALTER TABLE tweet OWNER TO hemangi;
+ALTER TABLE tweet OWNER TO parita;
 
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: hemangi
+-- Name: untitled_table_id_seq; Type: SEQUENCE; Schema: public; Owner: parita
+--
+
+CREATE SEQUENCE untitled_table_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE untitled_table_id_seq OWNER TO parita;
+
+--
+-- Name: untitled_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: parita
+--
+
+ALTER SEQUENCE untitled_table_id_seq OWNED BY follower.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: parita
+--
+
+CREATE TABLE users (
+    user_id integer NOT NULL,
+    username text,
+    mobilenumber integer,
+    email text,
+    password text,
+    image text
+);
+
+
+ALTER TABLE users OWNER TO parita;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: parita
 --
 
 CREATE SEQUENCE users_id_seq
@@ -101,81 +124,88 @@ CREATE SEQUENCE users_id_seq
     CACHE 1;
 
 
-ALTER TABLE users_id_seq OWNER TO hemangi;
+ALTER TABLE users_id_seq OWNER TO parita;
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: hemangi
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: parita
 --
 
-CREATE TABLE users (
-    user_id integer DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
-    username text,
-    mobilenumber integer,
-    email text,
-    password text
-);
+ALTER SEQUENCE users_id_seq OWNED BY users.user_id;
 
-
-ALTER TABLE users OWNER TO hemangi;
 
 --
--- Data for Name: follower; Type: TABLE DATA; Schema: public; Owner: hemangi
+-- Name: follower id; Type: DEFAULT; Schema: public; Owner: parita
+--
+
+ALTER TABLE ONLY follower ALTER COLUMN id SET DEFAULT nextval('untitled_table_id_seq'::regclass);
+
+
+--
+-- Name: users user_id; Type: DEFAULT; Schema: public; Owner: parita
+--
+
+ALTER TABLE ONLY users ALTER COLUMN user_id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Data for Name: follower; Type: TABLE DATA; Schema: public; Owner: parita
 --
 
 COPY follower (id, login_user_id, follower_id) FROM stdin;
-1	1	2
 \.
 
 
 --
--- Name: follower_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hemangi
---
-
-SELECT pg_catalog.setval('follower_id_seq', 1, true);
-
-
---
--- Data for Name: tweet; Type: TABLE DATA; Schema: public; Owner: hemangi
+-- Data for Name: tweet; Type: TABLE DATA; Schema: public; Owner: parita
 --
 
 COPY tweet (id, userid, tweet, "time") FROM stdin;
-20	2	cccccccc	2017-01-23 12:24:13.095342
-21	1	444444444	2017-01-23 12:24:51.578085
-22	3	xxyyyzzzz	2017-01-23 12:25:45.586938
 \.
 
 
 --
--- Name: tweet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hemangi
+-- Name: tweet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: parita
 --
 
-SELECT pg_catalog.setval('tweet_id_seq', 22, true);
+SELECT pg_catalog.setval('tweet_id_seq', 4, true);
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: hemangi
+-- Name: untitled_table_id_seq; Type: SEQUENCE SET; Schema: public; Owner: parita
 --
 
-COPY users (user_id, username, mobilenumber, email, password) FROM stdin;
-1	abc	332	abc@abc.com	123
-2	xyz	454	x@x.com	12
-3	hemangi	4545	hemangi@improwised.com	34
+SELECT pg_catalog.setval('untitled_table_id_seq', 1, false);
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: parita
+--
+
+COPY users (user_id, username, mobilenumber, email, password, image) FROM stdin;
 \.
 
 
 --
--- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hemangi
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: parita
 --
 
-SELECT pg_catalog.setval('users_id_seq', 3, true);
+SELECT pg_catalog.setval('users_id_seq', 1, false);
 
 
 --
--- Name: tweet tweet_pkey; Type: CONSTRAINT; Schema: public; Owner: hemangi
+-- Name: follower untitled_table_pkey; Type: CONSTRAINT; Schema: public; Owner: parita
 --
 
-ALTER TABLE ONLY tweet
-    ADD CONSTRAINT tweet_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY follower
+    ADD CONSTRAINT untitled_table_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: parita
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
 
 
 --
