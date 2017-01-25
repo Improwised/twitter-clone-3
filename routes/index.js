@@ -1,14 +1,12 @@
 const express = require('express');
-
+const fs = require('fs');
 const path = require('path');
-
 const DB = require('../helpers/db');
 
 const router = express.Router();
 
 const logout = require('express-passport-logout');
 const nodemailer = require('nodemailer');
-// GET: /
 
 router.post('/login', (req, res, next) => {
   const username = req.body.username;
@@ -16,50 +14,45 @@ router.post('/login', (req, res, next) => {
   let query;
 
   query = DB.builder()
-    .select()
-    .from('users')
-    .where('username = ?', username)
-    // .where('password = ?', password)
-    .toParam();
-  console.log(query);
-
+  .select()
+  .from('users')
+  .where('username = ?', username)
+  .toParam();
   DB.executeQuery(query, (error, results) => {
     if (error) {
       next(error);
       return;
     }
-    console.log(results.rowCount);
 
-    if (results.rowCount) {
-      query = DB.builder()
-      .select()
-      .from('users')
-      .where('username = ?', username)
-      .where('password = ?', password)
-      .toParam();
-      console.log(query);
-      DB.executeQuery(query, (err, results1) => {
-        if (err) {
-          next(err);
-          return;
-        }
-        console.log(results1.rowCount);
+  if (results.rowCount) {
+    query = DB.builder()
+    .select()
+    .from('users')
+    .where('username = ?', username)
+    .where('password = ?', password)
+    .toParam();
+    console.log(query);
+    DB.executeQuery(query, (err, results1) => {
+      if (err) {
+        next(err);
+        return;
+      }
 
-        if (results1.rowCount) {
-          console.log(username);
-          req.session.username = username;
-          req.session.user_id = results1.rows[0].user_id;
-          console.log(req.session.user_id);
-          console.log(req.session);
-          console.log('Log in successfully');
+      if (results1.rowCount) {
+        console.log(username);
+        req.session.username = username;
+        req.session.user_id = results1.rows[0].user_id;
+        console.log(req.session.user_id);
+        console.log(req.session);
+        console.log('Log in successfully');
 
-          console.log('====>', results1.rows);
-          res.redirect('/welcome');
-        } else {
-          console.log('username or password is incorrect');
-          res.redirect('login');
-        }
-      });
+        console.log('====>', results1.rows);
+        res.redirect('/welcome');
+      } else {
+        console.log('username or password is incorrect');
+        res.redirect('login');
+      }
+    });
     } else {
       console.log('Log in Not successfully');
       res.redirect('/register');
@@ -159,24 +152,31 @@ router.post('/register', (req, res, next) => {
       errors,
     });
   } else {
-    const query = DB.builder()
-    .insert()
-    .into('users')
-    .set('username', username)
-    .set('email', email)
-    .set('mobilenumber', mobileno)
-    .set('password', password)
-    .toParam();
+    console.log(req.files);
+    var newPath = path.resolve(__dirname , "../public/images/" + req.files.profile.name);
 
-    console.log('-->', query);
-    DB.executeQuery(query, (error) => {
-      if (error) {
-        next(error);
-        return;
-      }
+    fs.writeFile(newPath, req.files.profile.data, function (err) {
+
+    });
+       const query = DB.builder()
+      .insert()
+      .into('users')
+      .set('username', username)
+      .set('email', email)
+      .set('mobilenumber', mobileno)
+      .set('password', password)
+      .set('image' ,req.files.profile.name)
+      .toParam();
+
+      console.log('-->', query);
+      DB.executeQuery(query, (error) => {
+        if (error) {
+          next(error);
+          return;
+        }
       res.redirect('/welcome');
     });
-  // res.send('Hello ' + username + ' Phone ' + mobileno + ' Email ' + email);
+
   }
 });
 
@@ -230,50 +230,35 @@ router.get('/logout', (req, res) => {
       res.redirect('/login');
     }
   });
-
-  // req.session.destroy((e) => {
-  //   if (e) {
-  //     console.log(e);
-  //   } else {
-    // console.log('destroyed --->>', req.session.id);
-    // res.clearCookie('myCookie');
-    // req.logout();
-  //     res.redirect('/login');
-  //   }
-  // });
 });
 
 router.get('/welcome', (req, res, next) => {
   const session = req.session;
   let query;
   if (session.username) {
+
     query = DB.builder()
     .select()
     .from('users')
-    .where('username = ?', session.username)
+    .where('user_id = ?', session.user_id)
     .toParam();
-
-    console.log('-->', query);
-
-    DB.executeQuery(query, (error, results) => {
+      DB.executeQuery(query, (error, results) => {
       if (error) {
         next(error);
         return;
       }
+
       query = DB.builder()
       .select()
       .from('users')
       .where('user_id != ?', session.user_id)
       .where("user_id NOT IN ?",
-        DB.builder()
-        .select()
-        .field("follower_id")
-        .from("follower")
-        .where("login_user_id = ?", session.user_id))
+      DB.builder()
+      .select()
+      .field("follower_id")
+      .from("follower")
+      .where("login_user_id = ?", session.user_id))
       .toParam();
-
-      console.log('-->', query);
-
       DB.executeQuery(query, (error, follow) => {
         if (error) {
           next(error);
@@ -286,6 +271,7 @@ router.get('/welcome', (req, res, next) => {
          .field('tweet')
          .field('time')
          .field('id')
+         .field('image')
          .from('users', 'u')
          .join( DB.builder().select().from('tweet'), 't', 'u.user_id = t.userid')
          .where("u.user_id IN ? OR u.user_id= ? ",
@@ -302,10 +288,9 @@ router.get('/welcome', (req, res, next) => {
             return;
 
           }
-           //console.log(tweets.rows);
         res.render('welcome', {
-          users: follow.rows,
-          results: results.rows[0],
+          follow: follow.rows,
+          results: results.rows,
           tweets: tweets.rows,
         });
       });
@@ -320,26 +305,6 @@ router.get('/login', (req, res) => {
   res.render('login');
 });
 
-  // const a = DB.builder()
-  // .select()
-  // .from("users")
-  // .where("user_id NOT IN ?",
-  // DB.builder()
-  // .select()
-  // .field("follower_id")
-  // .from("follower")
-  // .where("login_user_id = ?", 1))
-  // .toParam();
-  // DB.executeQuery(a, (error, follow) => {
-  //   if (error) {
-  //     next(error);
-  //     return;
-  //   }
-  //   res.render('welcome', {
-  //     users: follow.rows,
-  //   });
-  // });
-
 router.get('/profilechange', (req, res, next) => {
   const session = req.session;
   let query;
@@ -347,7 +312,7 @@ router.get('/profilechange', (req, res, next) => {
     query = DB.builder()
     .select()
     .from('users')
-    .where('username = ?', session.username)
+    .where('user_id = ?', session.user_id)
     .toParam();
 
     console.log('-->', query);
@@ -362,6 +327,7 @@ router.get('/profilechange', (req, res, next) => {
       .field('username')
       .field('follower_id')
       .field('user_id')
+      .field('image')
       .field('id')
       .from('users', 'r')
       .join(DB.builder()
@@ -440,13 +406,72 @@ router.post('/unfollow', (req, res, next) => {
   });
 });
 
-// router.post('/profilepictureupload', (req, res, next) => {
-//   console.log("======>")
-//   //console.log(req.body);
-//   console.log(req.files);
-//   var newPath = path.resolve(__dirname , "/Users/parita/downloads/" + req.files.thumbnail.name);
-//   fs.writeFile(newPath, req.files.thumbnail.data, function (err) {
-//   res.redirect("back");
-//  });
-// });
+router.post('/profilepictureupload', (req, res, next) => {
+  const session = req.session;
+  console.log(req.files);
+  var newPath = path.resolve(__dirname , "../public/images/" + req.files.thumbnail.name);
+  fs.writeFile(newPath, req.files.thumbnail.data, function (err) {
+
+ });
+    const query = DB.builder()
+    .update()
+    .table('users')
+    .set('image', req.files.thumbnail.name)
+    .where('user_id = ?' , session.user_id)
+    .toParam();
+    console.log('-->', query);
+    DB.executeQuery(query, (error) => {
+      if (error) {
+        next(error);
+        return;
+      }
+      res.redirect('/profilechange');
+    });
+});
+router.post('/editprofile', (req, res, next) => {
+  const session = req.session;
+  console.log(session.user_id);
+  let query;
+  const username = req.body.username;
+  const email = req.body.email;
+  const mobileno = req.body.mobileno;
+  const password = req.body.confirmpassword;
+
+  req.checkBody('username', 'Username is required').notEmpty();
+  req.checkBody('mobileno', 'Mobile No is required').notEmpty();
+  req.checkBody('email', 'Email is required').notEmpty();
+  req.checkBody('email', 'Email is not valid').isEmail();
+  req.checkBody('password', 'Password is required').notEmpty();
+
+
+  const errors = req.validationErrors();
+
+  if (errors) {
+    console.log('FAILED');
+    res.render('register', {
+      errors,
+    });
+  } else {
+    const query = DB.builder()
+    .update()
+    .table('users')
+    .set('username', username)
+    .set('email', email)
+    .set('mobilenumber', mobileno)
+    .set('password', password)
+    .where('user_id = ?' , session.user_id)
+    .toParam();
+
+    console.log('-->', query);
+    DB.executeQuery(query, (error) => {
+      if (error) {
+        next(error);
+        return;
+      }
+      res.redirect('/profilechange');
+    });
+
+  }
+});
+
 module.exports = router;

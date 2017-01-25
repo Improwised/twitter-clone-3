@@ -17,9 +17,10 @@ block content
   .container
     .fb-profile
       img.fb-image-lg(align='left', src='./images/cover.jpg', alt='Profile image example' width ="100%")
-      img.fb-image-profile.thumbnail(align='left', src='http://lorempixel.com/180/180/people/8/', alt='Profile image example')
-      .fb-profile-text
-          h1 #{results.username}
+      each i in users
+        img.fb-image-profile.thumbnail(align='left', src='./images/'+ i.image)
+        .fb-profile-text
+          h1= i.username
   .container
     .row
       .col-sm-3
@@ -44,7 +45,6 @@ block content
           .container
             .row
               h3 Your tweets are here !!!!
-
               each row in tweets
                 .media.block-update-card
                   a.pull-left(href='#')
@@ -59,13 +59,12 @@ block content
         .profile-content
           .sidebar-menu
             h3 Your followers!!!!
-          each rows in users
-            .media.block-update-card
-                a.pull-left(href='#')
-                  img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
-                .media-body.update-card-body
-                  h5.media-heading= rows.username
-                  form(method="post" action="/unfollow")
-                    input(type="hidden",name="followerId",value=rows.id)
-                    button.btn.btn-primary(type="submit") Unfollow
-
+            each rows in users
+              .media.block-update-card
+                  a.pull-left(href='#')
+                    img.media-object.update-card-MDimentions(src='http://lorempixel.com/180/180/people/8/', alt='...' height = "50px" width="50px")
+                  .media-body.update-card-body
+                    h5.media-heading= rows.username
+                    form(method="post" action="/unfollow")
+                      input(type="hidden",name="followerId",value=rows.id)
+                      button.btn.btn-primary(type="submit") Unfollow
