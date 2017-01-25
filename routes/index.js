@@ -375,7 +375,8 @@ router.get('/profilepictureupload', (req, res) => {
 router.post('/follower', (req, res, next) => {
   const id = req.body.followerId;
   const session = req.session;
-  const query = DB.builder()
+  let query;
+  query = DB.builder()
   .insert()
   .into("follower")
   .set("login_user_id", session.user_id)
@@ -386,7 +387,22 @@ router.post('/follower', (req, res, next) => {
       next(error);
       return;
     }
-    res.redirect('/welcome');
+    query = DB.builder()
+    .select()
+    .from('follower')
+    .where('login_user_id = ?', session.user_id)
+    .toParam();
+    console.log(query);
+    DB.executeQuery(query, (error, c) => {
+    if (error) {
+      next(error);
+      return;
+    }
+    console.log(c.rows.length);
+    res.render('welcome', {
+      count: c.rows.length,
+    });
+  });
   });
 });
 
