@@ -377,9 +377,6 @@ router.post('/unfollow', (req, res, next) => {
   });
 });
 
-router.get('/profilepictureupload', () => {
-});
-
 router.post('/profilepictureupload', (req, res, next) => {
   const session = req.session;
   // console.log(req.files);
