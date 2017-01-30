@@ -118,7 +118,7 @@ profile {
 }
 
 .profile-usermenu ul li a {
-  color: #93a3b5;
+
   font-size: 14px;
   font-weight: 400;
 }
@@ -129,7 +129,7 @@ profile {
 }
 
 .profile-usermenu ul li a:hover {
-  background-color: #fafcfd;
+
   color: #5b9bd1;
 }
 
@@ -139,7 +139,7 @@ profile {
 
 .profile-usermenu ul li.active a {
   color: #5b9bd1;
-  background-color: #f6f9fb;
+
   border-left: 2px solid #5b9bd1;
   margin-left: -2px;
 }
@@ -271,8 +271,10 @@ fb-profile img.fb-image-lg{
 .fb-image-profile
 {
     margin: -90px 10px 0px 50px;
+
     z-index: 9;
     width: 20%;
+
 }
 
 @media (max-width:100%)

@@ -4,45 +4,60 @@ block content
   h1= title
   .container.head
       ul.nav.nav-tabs
-        li.active
-          a(href='#') Home
         li
-          a(href='#') About us
+          a(href='/')
+            i.glyphicon.glyphicon-home(style ="color : #00aced;") &nbsp;
+              | Home
+        li.active
+          a(href='/register')
+            i.glyphicon.glyphicon-pencil(style ="color : #00aced;") &nbsp;
+                | SignUp
+        li
+          a(href='/login')
+            i.glyphicon.glyphicon-user(style ="color : #00aced;") &nbsp;
+                |LogIn
+        li
+          a(href='https://twitter.com/about')
+            i.glyphicon.glyphicon-search(style ="color : #00aced;") &nbsp;
+                | About us
   .container
     .col-md-12.page-canvas
       .signin-wrapper
-        h1 Join twitter Today!!
-        form(action='/register' , method="post", class='form-horizontal ' enctype='multipart/form-data')
+        h2(style ="color : #00aced") Join twitter Today!!
+        form(action='/register' , method="post", class='form-horizontal', data-toggle="validator", enctype='multipart/form-data')
           div(class='form-content' text-align="center")
             div(class='form-group')
               div(class='col-sm-4')
-                input(type="text", name="username", class='form-control form-control-inline', placeholder='username')
+                input(type="text", name="username", class='form-control form-control-inline', placeholder='username', required)
             div(class='form-group')
               div(class='col-sm-4')
-                input(type="number", name="mobileno", class='form-control form-control-inline', placeholder='Mobile Number')
+                input(type="number", name="mobileno", class='form-control form-control-inline', placeholder='Mobile Number', required)
             div(class='form-group')
               div(class='col-sm-4')
-                input(type="text", name="email", class='form-control form-control-inline', placeholder='email')
+                input(type="text", name="email", class='form-control form-control-inline', placeholder='email' data-error="email address is invalid")
+                .help-block.with-errors
             div(class='form-group')
               div(class='col-sm-4')
-                input(type="password", name="password", class='form-control form-control-inline', placeholder='password')
+                input(type="password", name="password", class='form-control form-control-inline', placeholder='password', data-minlength="6", id="inputPassword", required)
+                .help-block Minimum of 6 characters
             div(class='form-group')
               div(class='col-sm-4')
-                input(type="password", name="confirmpassword", class='form-control form-control-inline' placeholder='Confirm password')
+                input(type="password", name="confirmpassword", class='form-control form-control-inline' placeholder='Confirm password', data-match="#inputPassword", data-match-error="Whoops, these don't match", required)
+                .help-block.with-errors
             div(class='form-group')
               div(class='col-sm-4')
-                h4 choose your profile picture
+                h4(style ="color : #00aced") choose your profile picture
             div(class='form-group')
               div(class='col-sm-4')
-                input(type='file', name='profile')
+                input(type='file', name='profile' ,style ="color : #00aced;", required)
             div(class='form-group')
               .col-sm-4
                 .checkbox
                   label
                     input(type="checkbox")
                     | Tailor Twitter based on my recent website visits &nbsp;
-                  a(href = "https://support.twitter.com/articles/20169421")
+                  a(href = "https://support.twitter.com/articles/20169421" style ="color : #00aced;")
                     | Learn more.
             div(class="form-group")
               .col-sm-4
-                button.btn.btn-default(type='submit' name="submit") Sign in
+                button.btn.btn-info(type='submit' name="submit") Sign in
