@@ -1,8 +1,10 @@
 extends ./layouts/main.pug
 
 block content
+  //- p= count
   p=tweet
   h1= title
+
   .container.head.navbar-default.navbar-fixed-top(style ="backgroung-color : #ffff")
       ul.nav.nav-tabs
         li
@@ -43,7 +45,8 @@ block content
               li
                 a(href='#')
                   i.glyphicon.glyphicon-ok(style ="color : #00aced;")
-                    |               folllowers
+                    |               folllowers  &nbsp;
+                    span.badge(style ="background-color : #00aced; font-size : 15px")= count
 
         .col-sm-6
           .profile-content
