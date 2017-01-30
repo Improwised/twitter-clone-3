@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/login', (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  const session = req.session;
   let query;
 
   query = DB.builder()
@@ -28,7 +29,6 @@ router.post('/login', (req, res, next) => {
       .where('email = ?', email)
       .where('password = ?', password)
       .toParam();
-      // console.log(query);
       DB.executeQuery(query, (err, results1) => {
         if (err) {
           next(err);
@@ -36,22 +36,13 @@ router.post('/login', (req, res, next) => {
         }
 
         if (results1.rowCount) {
-          // console.log(username);
-          //req.session.username = username;
-          req.session.user_id = results1.rows[0].user_id;
-          // console.log(req.session.user_id);
-          // console.log(req.session);
-          // console.log('Log in successfully');
-
-          // console.log('====>', results1.rows);
+          session.user_id = results1.rows[0].user_id;
           res.redirect('/welcome');
         } else {
-          // console.log('username or password is incorrect');
-          res.redirect('login');
+          res.redirect('/login');
         }
       });
     } else {
-      // console.log('Log in Not successfully');
       res.redirect('/register');
     }
   });
@@ -85,12 +76,10 @@ router.post('/register', (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    // console.log('FAILED');
     res.render('register', {
       errors,
     });
   } else {
-    // console.log(req.files);
     const newPath = path.resolve(__dirname, `../public/images/ ${req.files.profile.name}`);
 
     fs.writeFile(newPath, req.files.profile.data, () => {
@@ -104,8 +93,6 @@ router.post('/register', (req, res, next) => {
     .set('password', password)
     .set('image', req.files.profile.name)
     .toParam();
-
-    // console.log('-->', query);
     DB.executeQuery(query, (error) => {
       if (error) {
         next(error);
@@ -129,9 +116,6 @@ router.post('/tweet', (req, res, next) => {
   .set('tweet', tweet)
   .set('userid', session.user_id)
   .toParam();
-
-  // console.log('tweettweettweettweet-->', query);
-
   DB.executeQuery(query, (error) => {
     if (error) {
       next(error);
@@ -158,12 +142,8 @@ router.get('/deletetweet/:id', (req, res, next) => {
 });
 
 router.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      // console.log(err);
-    } else {
-      res.redirect('/login');
-    }
+  req.session.destroy(() => {
+    res.redirect('/login');
   });
 });
 
@@ -226,14 +206,11 @@ router.get('/welcome', (req, res, next) => {
           .from('follower')
           .where('login_user_id = ?', session.user_id)
           .toParam();
-          // console.log(query);
           DB.executeQuery(query, (error, c) => {
             if (error) {
               next(error);
               return;
             }
-            // console.log(c.rows.length);
-
             res.render('welcome', {
               count: c.rows.length,
               follow: follow.rows,
@@ -245,7 +222,7 @@ router.get('/welcome', (req, res, next) => {
       });
     });
   } else {
-    res.write('<h1>Please login first.</h1>');
+    res.redirect('/login');
   }
 });
 
@@ -262,9 +239,6 @@ router.get('/profilechange', (req, res, next) => {
     .from('users')
     .where('user_id = ?', session.user_id)
     .toParam();
-
-    // console.log('-->', query);
-
     DB.executeQuery(query, (error, results) => {
       if (error) {
         next(error);
@@ -281,6 +255,7 @@ router.get('/profilechange', (req, res, next) => {
       .join(DB.builder()
       .select()
       .from('follower'), 'f', 'r.user_id = f.follower_id')
+      .where('login_user_id = ?', session.user_id)
       .toParam();
       DB.executeQuery(query, (error, users) => {
         if (error) {
@@ -301,23 +276,33 @@ router.get('/profilechange', (req, res, next) => {
         .from('users'), 'u', 't.userid = u.user_id')
         .where('user_id = ? ', session.user_id)
         .toParam();
-        // console.log(query);
         DB.executeQuery(query, (error, tweets) => {
           if (error) {
             next(error);
             return;
           }
-
-          res.render('profilechange', {
-            tweets: tweets.rows,
-            users: users.rows,
-            results: results.rows,
+          query = DB.builder()
+          .select()
+          .from('follower')
+          .where('login_user_id = ?', session.user_id)
+          .toParam();
+          DB.executeQuery(query, (error, c) => {
+            if (error) {
+              next(error);
+              return;
+            }
+            res.render('profilechange', {
+              count: c.rows.length,
+              tweets: tweets.rows,
+              users: users.rows,
+              results: results.rows,
+            });
           });
         });
       });
     });
   } else {
-    res.write('<h1>Please login first.</h1>');
+    res.redirect('/login');
   }
 });
 
@@ -379,7 +364,6 @@ router.post('/unfollow', (req, res, next) => {
 
 router.post('/profilepictureupload', (req, res, next) => {
   const session = req.session;
-  // console.log(req.files);
   const newPath = path.resolve(__dirname, `../public/images/ ${req.files.thumbnail.name}`);
   fs.writeFile(newPath, req.files.thumbnail.data, () => {
   });
@@ -389,7 +373,6 @@ router.post('/profilepictureupload', (req, res, next) => {
   .set('image', req.files.thumbnail.name)
   .where('user_id = ?', session.user_id)
   .toParam();
-  // console.log('-->', query);
   DB.executeQuery(query, (error) => {
     if (error) {
       next(error);
@@ -401,7 +384,6 @@ router.post('/profilepictureupload', (req, res, next) => {
 
 router.post('/editprofile', (req, res, next) => {
   const session = req.session;
-  // console.log(session.user_id);
   const username = req.body.username;
   const email = req.body.email;
   const mobileno = req.body.mobileno;
@@ -417,7 +399,6 @@ router.post('/editprofile', (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    // console.log('FAILED');
     res.render('register', {
       errors,
     });
@@ -431,8 +412,6 @@ router.post('/editprofile', (req, res, next) => {
     .set('password', password)
     .where('user_id = ?', session.user_id)
     .toParam();
-
-    // console.log('-->', query);
     DB.executeQuery(query, (error) => {
       if (error) {
         next(error);

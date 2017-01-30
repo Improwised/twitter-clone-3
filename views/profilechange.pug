@@ -43,14 +43,33 @@ block content
                   i.glyphicon.glyphicon-home
                     |               home
               li
-                a(href='#')
+                a(href='/profilechange')
                   i.glyphicon.glyphicon-ok(style ="color : #00aced;")
-                    |               folllowers &nbsp;
-                    span.badge(style ="background-color : #00aced;")= count
+                    |               folllowers &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    span.badge(style ="background-color : #00aced; font-size : 15px;")= count
 
         .col-sm-6
           .profile-content
             .container
+              .row
+                p(style ="color : #00aced;")
+                  i.glyphicon.glyphicon-pencil &nbsp;
+                  | What's in your mind ??
+              .row
+                .col-sm-5
+                  .widget-area.no-padding.blank
+                    .status-upload
+
+                      form(action='/tweet', method='post')
+
+                        textarea(name='tweet' placeholder='What are you doing right now?')
+
+                        button.btn.btn-info(type='submit')
+                          i.fa.fa-share
+                          |  tweet
+              .row
+                .col-sm-5
+                  p &nbsp;
               .row
                 h4(style ="color : #00aced;") Your tweets are here !!!!
                 each row in tweets

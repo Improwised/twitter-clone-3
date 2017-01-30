@@ -15,8 +15,10 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
   require('dotenv').load();
 
   if (!process.env.PORT) {
-    console.error('Required environment variable not found. Are you sure you have a ".env" file in your application root?');
-    console.error('If not, you can just copy "example.env" and change the defaults as per your need.');
+    // console.error(`Required environment variable not found. Are you sure you
+    //   have a ".env" file in your application root?`);
+    // console.error(`If not, you can just copy "example.env" and change the
+    //   defaults as per your need.`);
     process.exit(1);
   }
 }
@@ -84,5 +86,5 @@ app.use((err, req, res) => {
 });
 
 server.listen(process.env.PORT);
-console.log(`Server started on port ${process.env.PORT}`);
+// console.log(`Server started on port ${process.env.PORT}`);
 module.exports = app;
