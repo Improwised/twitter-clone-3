@@ -1,9 +1,14 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const multer = require('multer');
 const DB = require('../helpers/db');
 
 const router = express.Router();
+
+const upload = multer({ dest: path.resolve(__dirname, '../public/images/') });
+
+
 
 router.post('/login', (req, res, next) => {
   const email = req.body.email;
@@ -36,7 +41,7 @@ router.post('/login', (req, res, next) => {
         }
 
         if (results1.rowCount) {
-          session.user_id = results1.rows[0].user_id;
+          req.session.user_id = results1.rows[0].user_id;
           res.redirect('/welcome');
         } else {
           res.redirect('/login');
@@ -48,10 +53,6 @@ router.post('/login', (req, res, next) => {
   });
 });
 
-router.get('/retrive_password', (req, res) => {
-  res.render('forgot_password');
-});
-
 router.get('/', (req, res) => {
   res.render('index');
 });
@@ -61,6 +62,9 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/register', (req, res, next) => {
+  console.log("called")
+
+
   const username = req.body.username;
   const email = req.body.email;
   const mobileno = req.body.mobileno;
@@ -80,8 +84,7 @@ router.post('/register', (req, res, next) => {
       errors,
     });
   } else {
-    const newPath = path.resolve(__dirname, `../public/images/ ${req.files.profile.name}`);
-
+    const newPath = path.resolve(__dirname, `../public/images/${req.files.profile.name}`);
     fs.writeFile(newPath, req.files.profile.data, () => {
     });
     const query = DB.builder()
@@ -98,13 +101,10 @@ router.post('/register', (req, res, next) => {
         next(error);
         return;
       }
-      res.redirect('/login');
+
+      res.render('login');
     });
   }
-});
-
-router.get('/tweet', (req, res) => {
-  res.render();
 });
 
 router.post('/tweet', (req, res, next) => {
@@ -178,24 +178,23 @@ router.get('/welcome', (req, res, next) => {
           next(error);
           return;
         }
-
         query = DB.builder()
-         .select()
-         .field('username')
-         .field('tweet')
-         .field('time')
-         .field('id')
-         .field('image')
-         .from('users', 'u')
-         .join(DB.builder().select().from('tweet'), 't', 'u.user_id = t.userid')
-         .where('u.user_id IN ? OR u.user_id= ? ',
-         (DB.builder()
-          .select()
-          .field('follower_id')
-          .from('follower')
-          .where('login_user_id = ?', session.user_id)), session.user_id)
-          .order('time', false)
-          .toParam();
+        .select()
+        .field('username')
+        .field('tweet')
+        .field('time')
+        .field('id')
+        .field('image')
+        .from('users', 'u')
+        .join(DB.builder().select().from('tweet'), 't', 'u.user_id = t.userid')
+        .where('u.user_id IN ? OR u.user_id= ? ',
+        (DB.builder()
+        .select()
+        .field('follower_id')
+        .from('follower')
+        .where('login_user_id = ?', session.user_id)), session.user_id)
+        .order('time', false)
+        .toParam();
         DB.executeQuery(query, (error, tweets) => {
           if (error) {
             next(error);
@@ -244,6 +243,8 @@ router.get('/profilechange', (req, res, next) => {
         next(error);
         return;
       }
+      console.log(req.file);
+
       query = DB.builder()
       .select()
       .field('username')
@@ -274,7 +275,8 @@ router.get('/profilechange', (req, res, next) => {
         .join(DB.builder()
         .select()
         .from('users'), 'u', 't.userid = u.user_id')
-        .where('user_id = ? ', session.user_id)
+        .where('user_id = ?', session.user_id)
+        .order("time", false)
         .toParam();
         DB.executeQuery(query, (error, tweets) => {
           if (error) {
@@ -305,6 +307,8 @@ router.get('/profilechange', (req, res, next) => {
     res.redirect('/login');
   }
 });
+
+
 
 router.get('/profilepictureupload', (req, res, next) => {
   const session = req.session;
@@ -362,28 +366,40 @@ router.post('/unfollow', (req, res, next) => {
   });
 });
 
-router.post('/profilepictureupload', (req, res, next) => {
-  const session = req.session;
-  const newPath = path.resolve(__dirname, `../public/images/ ${req.files.thumbnail.name}`);
-  fs.writeFile(newPath, req.files.thumbnail.data, () => {
-  });
-  const query = DB.builder()
-  .update()
-  .table('users')
-  .set('image', req.files.thumbnail.name)
-  .where('user_id = ?', session.user_id)
-  .toParam();
-  DB.executeQuery(query, (error) => {
-    if (error) {
-      next(error);
-      return;
-    }
-    res.redirect('/profilechange');
-  });
+router.post('/profilepictureupload', upload.single("thumbnail"), (req, res, next) => {
+ if (!req.session.user_id) {
+   //res.redirect('/login');
+ }
+ // console.log(req);
+
+ let photo = "";
+if (req.file) {
+   photo = req.file.filename;
+ } else {
+   photo = "";
+ }
+
+ const query = DB.builder()
+   .update()
+   .table('users')
+   .set('image', photo)
+   .where('user_id = ?', req.session.user_id)
+   .toParam();
+ // console.log(query);
+
+ DB.executeQuery(query, (error, results) => {
+   if (error) {
+     console.log(error);
+     next(error);
+     return;
+   }
+   res.redirect('/profilechange');
+ });
 });
 
 router.post('/editprofile', (req, res, next) => {
   const session = req.session;
+  let query;
   const username = req.body.username;
   const email = req.body.email;
   const mobileno = req.body.mobileno;
@@ -395,15 +411,13 @@ router.post('/editprofile', (req, res, next) => {
   req.checkBody('email', 'Email is not valid').isEmail();
   req.checkBody('password', 'Password is required').notEmpty();
 
-
   const errors = req.validationErrors();
-
   if (errors) {
     res.render('register', {
       errors,
     });
   } else {
-    const query = DB.builder()
+    query = DB.builder()
     .update()
     .table('users')
     .set('username', username)
@@ -417,7 +431,7 @@ router.post('/editprofile', (req, res, next) => {
         next(error);
         return;
       }
-      res.redirect('/profilechange');
+      res.render('profilechange');
     });
   }
 });

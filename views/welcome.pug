@@ -49,6 +49,7 @@ block content
                         i.glyphicon.glyphicon-ok(style ="color : #00aced;")
                           |    folllowers &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                           span.badge(style ="background-color : #00aced; font-size : 15px;")= count
+
                 //- END MENU
             .col-sm-6
               .profile-content
@@ -64,7 +65,7 @@ block content
 
                           form(action='/tweet', method='post')
 
-                            textarea(name='tweet' placeholder='What are you doing right now?')
+                            textarea(name='tweet' placeholder='What are you doing right now?', required)
 
                             button.btn.btn-info(type='submit')
                               i.fa.fa-share
