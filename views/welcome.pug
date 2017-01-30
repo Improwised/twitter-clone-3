@@ -64,7 +64,7 @@ block content
 
                           form(action='/tweet', method='post')
 
-                            textarea(name='tweet' placeholder='What are you doing right now?')
+                            textarea(name='tweet' placeholder='What are you doing right now?', required)
 
                             button.btn.btn-info(type='submit')
                               i.fa.fa-share
@@ -82,8 +82,6 @@ block content
                           .media-body.update-card-body
                             h5.media-heading(style ="color : #00aced;")=row.username + ' · ' + row.time
                             p= row.tweet
-                            a(href='/deletetweet/' + row.id)
-                              i.glyphicon.glyphicon-trash(style ="color : #00aced;")
 
             .col-sm-3(style ="padding-top :30px")
               div(class="page-container")

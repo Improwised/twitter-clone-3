@@ -5,7 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-var session = require('express-session')
+const session = require('express-session');
 const busboybodyParser = require('busboy-body-parser');
 const expressValidator = require('express-validator');
 
@@ -39,10 +39,10 @@ app.use(expressValidator());
 app.use(busboybodyParser({ limit: '5mb' }));
 
 app.use(session({
- secret: 'password',
- resave: false,
- saveUninitialized: true
-}))
+  secret: 'password',
+  resave: false,
+  saveUninitialized: true,
+}));
 
 app.use('/', routes);
 app.use('/login', routes);
