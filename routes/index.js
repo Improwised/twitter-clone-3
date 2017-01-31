@@ -8,8 +8,6 @@ const router = express.Router();
 
 const upload = multer({ dest: path.resolve(__dirname, '../public/images/') });
 
-
-
 router.post('/login', (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -62,8 +60,7 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/register', (req, res, next) => {
-  console.log("called")
-
+  console.log("called");
 
   const username = req.body.username;
   const email = req.body.email;
@@ -80,32 +77,65 @@ router.post('/register', (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
+    console.log('if');
+    console.log(errors);
     res.render('register', {
       errors,
     });
   } else {
-    const newPath = path.resolve(__dirname, `../public/images/${req.files.profile.name}`);
-    fs.writeFile(newPath, req.files.profile.data, () => {
-    });
-    const query = DB.builder()
-    .insert()
-    .into('users')
-    .set('username', username)
-    .set('email', email)
-    .set('mobilenumber', mobileno)
-    .set('password', password)
-    .set('image', req.files.profile.name)
-    .toParam();
-    DB.executeQuery(query, (error) => {
-      if (error) {
-        next(error);
-        return;
-      }
+    console.log('else');
 
-      res.render('login');
-    });
-  }
+    if (req.files && req.files.profile) {
+      const newPath = path.resolve(__dirname, `../public/images/${req.files.profile.name}`);
+      fs.writeFile(newPath, req.files.profile.data, () => {
+      });
+    }
+    const query = DB.builder()
+   .insert()
+   .into('users')
+   .set('username', username)
+   .set('email', email)
+   .set('mobilenumber', mobileno)
+   .set('password', password)
+
+ if (req.files && req.files.profile) {
+   query
+     .set('image', req.files.profile.name);
+ }
+   query
+     .returning('*');
+
+   console.log(query.toString());
+   // .toParam();
+   return DB.executeQuery(query.toParam(), (error) => {
+     if (error) {
+       console.log(error)
+       next(error);
+       return;
+     }
+     return res.render('login');
+   });
+ }
 });
+//     const query = DB.builder()
+//     .insert()
+//     .into('users')
+//     .set('username', username)
+//     .set('email', email)
+//     .set('mobilenumber', mobileno)
+//     .set('password', password)
+//     .set('image', req.files.profile.name)
+//     .toParam();
+//     DB.executeQuery(query, (error) => {
+//       if (error) {
+//         next(error);
+//         return;
+//       }
+
+//       res.render('login');
+//     });
+//   }
+// });
 
 router.post('/tweet', (req, res, next) => {
   const tweet = req.body.tweet;
@@ -367,34 +397,33 @@ router.post('/unfollow', (req, res, next) => {
 });
 
 router.post('/profilepictureupload', upload.single("thumbnail"), (req, res, next) => {
- if (!req.session.user_id) {
+  if (!req.session.user_id) {
    //res.redirect('/login');
- }
- // console.log(req);
+  }
+  // console.log(req);
 
- let photo = "";
-if (req.file) {
-   photo = req.file.filename;
- } else {
-   photo = "";
- }
+  let photo = '';
+  if (req.file) {
+    photo = req.file.filename;
+  } else {
+    photo = '';
+  }
 
- const query = DB.builder()
-   .update()
-   .table('users')
-   .set('image', photo)
-   .where('user_id = ?', req.session.user_id)
-   .toParam();
- // console.log(query);
+  const query = DB.builder()
+  .update()
+  .table('users')
+  .set('image', photo)
+  .where('user_id = ?', req.session.user_id)
+  .toParam();
+  // console.log(query);
 
- DB.executeQuery(query, (error, results) => {
-   if (error) {
-     console.log(error);
-     next(error);
-     return;
-   }
-   res.redirect('/profilechange');
- });
+  DB.executeQuery(query, (error, results) => {
+    if (error) {
+      next(error);
+      return;
+    }
+    res.redirect('/profilechange');
+  });
 });
 
 router.post('/editprofile', (req, res, next) => {
