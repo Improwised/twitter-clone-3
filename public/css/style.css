@@ -6,6 +6,12 @@
   margin: auto;
 }
 
+/* Alert messages */
+.msgalert {
+  font-weight: bolder;
+  color: red;
+}
+
 .signin-wrapper {
   width: auto;
   /*max-width: 585px;*/

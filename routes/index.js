@@ -1,5 +1,4 @@
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const DB = require('../helpers/db');
@@ -59,9 +58,7 @@ router.get('/register', (req, res) => {
   res.render('register');
 });
 
-router.post('/register', (req, res, next) => {
-  console.log("called");
-
+router.post('/register', upload.single('profile'), (req, res, next) => {
   const username = req.body.username;
   const email = req.body.email;
   const mobileno = req.body.mobileno;
@@ -69,73 +66,48 @@ router.post('/register', (req, res, next) => {
 
   req.checkBody('username', 'Username is required').notEmpty();
   req.checkBody('mobileno', 'Mobile No is required').notEmpty();
-  req.checkBody('email', 'Email is required').notEmpty();
-  req.checkBody('email', 'Email is not valid').isEmail();
+  if (req.body.email !== '') {
+    req.checkBody('email', 'Email is not valid').isEmail();
+  } else {
+    req.checkBody('email', 'Email is required').notEmpty();
+  }
   req.checkBody('password', 'Password is required').notEmpty();
   req.checkBody('confirmpassword', 'Password do not match').equals(req.body.password);
 
   const errors = req.validationErrors();
 
   if (errors) {
-    console.log('if');
-    console.log(errors);
     res.render('register', {
       errors,
     });
   } else {
-    console.log('else');
+    let photo = '';
 
-    if (req.files && req.files.profile) {
-      const newPath = path.resolve(__dirname, `../public/images/${req.files.profile.name}`);
-      fs.writeFile(newPath, req.files.profile.data, () => {
-      });
+    if (req.file) {
+      photo = req.file.filename;
+    } else {
+      photo = 'cover.jpg';
     }
+
     const query = DB.builder()
-   .insert()
-   .into('users')
-   .set('username', username)
-   .set('email', email)
-   .set('mobilenumber', mobileno)
-   .set('password', password)
+    .insert()
+    .into('users')
+    .set('username', username)
+    .set('email', email)
+    .set('image', photo)
+    .set('mobilenumber', mobileno)
+    .set('password', password)
+    .toParam();
 
- if (req.files && req.files.profile) {
-   query
-     .set('image', req.files.profile.name);
- }
-   query
-     .returning('*');
-
-   console.log(query.toString());
-   // .toParam();
-   return DB.executeQuery(query.toParam(), (error) => {
-     if (error) {
-       console.log(error)
-       next(error);
-       return;
-     }
-     return res.render('login');
-   });
- }
+    DB.executeQuery(query, (error, results) => {
+      if (error) {
+        next(error);
+        return;
+      }
+      res.redirect('/login');
+    });
+  }
 });
-//     const query = DB.builder()
-//     .insert()
-//     .into('users')
-//     .set('username', username)
-//     .set('email', email)
-//     .set('mobilenumber', mobileno)
-//     .set('password', password)
-//     .set('image', req.files.profile.name)
-//     .toParam();
-//     DB.executeQuery(query, (error) => {
-//       if (error) {
-//         next(error);
-//         return;
-//       }
-
-//       res.render('login');
-//     });
-//   }
-// });
 
 router.post('/tweet', (req, res, next) => {
   const tweet = req.body.tweet;
@@ -273,8 +245,6 @@ router.get('/profilechange', (req, res, next) => {
         next(error);
         return;
       }
-      console.log(req.file);
-
       query = DB.builder()
       .select()
       .field('username')
@@ -306,7 +276,7 @@ router.get('/profilechange', (req, res, next) => {
         .select()
         .from('users'), 'u', 't.userid = u.user_id')
         .where('user_id = ?', session.user_id)
-        .order("time", false)
+        .order('time', false)
         .toParam();
         DB.executeQuery(query, (error, tweets) => {
           if (error) {
@@ -337,8 +307,6 @@ router.get('/profilechange', (req, res, next) => {
     res.redirect('/login');
   }
 });
-
-
 
 router.get('/profilepictureupload', (req, res, next) => {
   const session = req.session;
@@ -396,12 +364,7 @@ router.post('/unfollow', (req, res, next) => {
   });
 });
 
-router.post('/profilepictureupload', upload.single("thumbnail"), (req, res, next) => {
-  if (!req.session.user_id) {
-   //res.redirect('/login');
-  }
-  // console.log(req);
-
+router.post('/profilepictureupload', upload.single('thumbnail'), (req, res, next) => {
   let photo = '';
   if (req.file) {
     photo = req.file.filename;
