@@ -26,13 +26,15 @@ block content
         .signin-wrapper
           .row.profile
             .col-sm-3
-              .profile-sidebar
-                //- SIDEBAR USERPIC
-                each profile in results
-                  .profile-userpic
-                    img.img-responsive(src='./images/'+ profile.image, alt='')
-                  .profile-usertitle
-                    .profile-usertitle-name(style ="color : #00aced;")= profile.username
+              p
+              .page-canvas(style ="padding:10px;")
+                .profile-sidebar
+                  //- SIDEBAR USERPIC
+                  each profile in results
+                    .profile-userpic
+                      img.img-responsive(src='./images/'+ profile.image, alt='',height = "200px" width="200px")
+                    .profile-usertitle
+                      .profile-usertitle-name(style ="color : #00aced;")= profile.username
 
                 .profile-usermenu
                   ul.nav
@@ -61,14 +63,14 @@ block content
                     .col-sm-5
                       .widget-area.no-padding.blank
                         .status-upload
+                          .page-canvas
+                              form(action='/tweet', method='post')
 
-                          form(action='/tweet', method='post')
+                                textarea(name='tweet' placeholder='What are you doing right now?', maxlength="140" , required)
 
-                            textarea(name='tweet' placeholder='What are you doing right now?', required)
-
-                            button.btn.btn-info(type='submit')
-                              i.fa.fa-share
-                              |  tweet
+                                button.btn.btn-info(type='submit')
+                                  i.fa.fa-share
+                                  |  tweet
 
                   .row
                     .col-sm-5
@@ -76,12 +78,16 @@ block content
                   .row
                     .col-sm-5
                       each row in tweets
-                        .media.block-update-card
-                          a.pull-left(href='#')
-                            img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
-                          .media-body.update-card-body
-                            h5.media-heading(style ="color : #00aced;")=row.username + ' · ' + row.time
-                            p= row.tweet
+                        p
+                        .page-canvas(style = "padding :5px;")
+                          - const a = new Date(row.time)
+                          .media.block-update-card
+                            a.pull-left(href='#')
+                              img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "75px" width="75px")
+                            .media-body.update-card-body
+                              h5.media-heading(style ="color : #00aced;")=row.username
+                              p= row.tweet
+                              p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
 
             .col-sm-3(style ="padding-top :30px")
               div(class="page-container")
@@ -91,9 +97,10 @@ block content
                 .sidebar-menu
                   each rows in follow
                     p &nbsp;
-                    img.img-fluid.thumbnail.card-img-top(src='./images/'+ rows.image ,height="150px" ,width="150px")
-                    .card-block
-                      h5.card-title(style ="color : #00aced;")= rows.username
-                      form(method='post', action='/follower')
-                        input(type='hidden',name='followerId',value=rows.user_id)
-                        button.btn.btn-info(type='submit') follow
+                    .page-canvas
+                      img.img-fluid.thumbnail.card-img-top(src='./images/'+ rows.image ,height="150px" ,width="150px")
+                      .card-block
+                        h5.card-title(style ="color : #00aced;")= rows.username
+                        form(method='post', action='/follower')
+                          input(type='hidden',name='followerId',value=rows.user_id)
+                          button.btn.btn-info(type='submit') follow

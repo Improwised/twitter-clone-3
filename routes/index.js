@@ -1,5 +1,4 @@
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const DB = require('../helpers/db');
@@ -7,8 +6,6 @@ const DB = require('../helpers/db');
 const router = express.Router();
 
 const upload = multer({ dest: path.resolve(__dirname, '../public/images/') });
-
-
 
 router.post('/login', (req, res, next) => {
   const email = req.body.email;
@@ -40,8 +37,6 @@ router.post('/login', (req, res, next) => {
         }
 
         if (results1.rowCount) {
-
-          //req.session.username = username;
           req.session.user_id = results1.rows[0].user_id;
           res.redirect('/welcome');
         } else {
@@ -62,10 +57,7 @@ router.get('/register', (req, res) => {
   res.render('register');
 });
 
-router.post('/register', (req, res, next) => {
-  console.log("called")
-
-
+router.post('/register', upload.single('profile'), (req, res, next) => {
   const username = req.body.username;
   const email = req.body.email;
   const mobileno = req.body.mobileno;
@@ -73,8 +65,11 @@ router.post('/register', (req, res, next) => {
 
   req.checkBody('username', 'Username is required').notEmpty();
   req.checkBody('mobileno', 'Mobile No is required').notEmpty();
-  req.checkBody('email', 'Email is required').notEmpty();
-  req.checkBody('email', 'Email is not valid').isEmail();
+  if(req.body.email != '') {
+    req.checkBody('email', 'Email is not valid').isEmail();
+  } else {
+    req.checkBody('email', 'Email is required').notEmpty();
+  }
   req.checkBody('password', 'Password is required').notEmpty();
   req.checkBody('confirmpassword', 'Password do not match').equals(req.body.password);
 
@@ -85,26 +80,30 @@ router.post('/register', (req, res, next) => {
       errors,
     });
   } else {
+    let photo = '';
 
-    const newPath = path.resolve(__dirname, `../public/images/${req.files.profile.name}`);
-    fs.writeFile(newPath, req.files.profile.data, () => {
-    });
+    if (req.file) {
+      photo = req.file.filename;
+    } else {
+      photo = 'cover.jpg';
+    }
+
     const query = DB.builder()
     .insert()
     .into('users')
     .set('username', username)
     .set('email', email)
+    .set('image', photo)
     .set('mobilenumber', mobileno)
     .set('password', password)
-    .set('image', req.files.profile.name)
     .toParam();
-    DB.executeQuery(query, (error) => {
+
+    DB.executeQuery(query, (error, results) => {
       if (error) {
         next(error);
         return;
       }
-
-      res.render('login');
+      res.redirect('/login');
     });
   }
 });
@@ -112,19 +111,27 @@ router.post('/register', (req, res, next) => {
 router.post('/tweet', (req, res, next) => {
   const tweet = req.body.tweet;
   const session = req.session;
-  const query = DB.builder()
-  .insert()
-  .into('tweet')
-  .set('tweet', tweet)
-  .set('userid', session.user_id)
-  .toParam();
-  DB.executeQuery(query, (error) => {
-    if (error) {
-      next(error);
-      return;
-    }
-    res.redirect('/welcome');
-  });
+  req.checkBody('tweet', 'Invalid length of tweet min= 8 max= 140').notEmpty().len(2, 140);
+  const errors = req.validationErrors();
+  if (errors) {
+    res.render('register', {
+      errors,
+    });
+  } else {
+    const query = DB.builder()
+    .insert()
+    .into('tweet')
+    .set('tweet', tweet)
+    .set('userid', session.user_id)
+    .toParam();
+    DB.executeQuery(query, (error) => {
+      if (error) {
+        next(error);
+        return;
+      }
+      res.redirect('/welcome');
+    });
+  }
 });
 
 router.get('/deletetweet/:id', (req, res, next) => {
@@ -150,7 +157,6 @@ router.get('/logout', (req, res) => {
     } else {
       res.redirect('/login');
     }
-
   });
 });
 
@@ -253,8 +259,6 @@ router.get('/profilechange', (req, res, next) => {
         next(error);
         return;
       }
-      console.log(req.file);
-
       query = DB.builder()
       .select()
       .field('username')
@@ -286,7 +290,7 @@ router.get('/profilechange', (req, res, next) => {
         .select()
         .from('users'), 'u', 't.userid = u.user_id')
         .where('user_id = ?', session.user_id)
-        .order("time", false)
+        .order('time', false)
         .toParam();
 
         DB.executeQuery(query, (error, tweets) => {
@@ -299,7 +303,6 @@ router.get('/profilechange', (req, res, next) => {
           .from('follower')
           .where('login_user_id = ?', session.user_id)
           .toParam();
-          // console.log(query);
           DB.executeQuery(query, (error, c) => {
             if (error) {
               next(error);
@@ -319,9 +322,6 @@ router.get('/profilechange', (req, res, next) => {
     res.write('<h1>Please login first.</h1>');
   }
 });
-
-
-
 router.get('/profilepictureupload', (req, res, next) => {
   const session = req.session;
   let query;
@@ -357,7 +357,6 @@ router.post('/follower', (req, res, next) => {
       next(error);
       return;
     }
-
     res.redirect('/welcome');
   });
 });
@@ -378,60 +377,28 @@ router.post('/unfollow', (req, res, next) => {
   });
 });
 
-router.post('/profilepictureupload', upload.single("thumbnail"), (req, res, next) => {
- if (!req.session.user_id) {
-   //res.redirect('/login');
- }
- // console.log(req);
+router.post('/profilepictureupload', upload.single('thumbnail'), (req, res, next) => {
+  let photo = '';
+  if (req.file) {
+    photo = req.file.filename;
+  } else {
+    photo = '';
+  }
 
- let photo = "";
-if (req.file) {
-   photo = req.file.filename;
- } else {
-   photo = "";
- }
-
- const query = DB.builder()
-   .update()
-   .table('users')
-   .set('image', photo)
-   .where('user_id = ?', req.session.user_id)
-   .toParam();
- // console.log(query);
-
- DB.executeQuery(query, (error, results) => {
-   if (error) {
-     console.log(error);
-     next(error);
-     return;
-   }
-   res.redirect('/profilechange');
- });
+  const query = DB.builder()
+    .update()
+    .table('users')
+    .set('image', photo)
+    .where('user_id = ?', req.session.user_id)
+    .toParam();
+  DB.executeQuery(query, (error, results) => {
+    if (error) {
+      next(error);
+      return;
+    }
+    res.redirect('/profilechange');
+  });
 });
-
-// router.post('/profilepictureupload', (req, res, next) => {
-//   const session = req.session;
-
-
-//   const newPath = path.resolve(__dirname, `../public/images/${req.files.thumbnail.name}`);
-//   fs.writeFile(newPath, req.files.thumbnail.data, () => {
-
-//   });
-//   const query = DB.builder()
-//   .update()
-//   .table('users')
-//   .set('image', req.files.thumbnail.name)
-//   .where('user_id = ?', session.user_id)
-//   .toParam();
-
-//   DB.executeQuery(query, (error) => {
-//     if (error) {
-//       next(error);
-//       return;
-//     }
-//     res.redirect('/profilechange');
-//   });
-// });
 
 router.post('/editprofile', (req, res, next) => {
   const session = req.session;
