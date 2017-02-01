@@ -7,6 +7,10 @@ const router = express.Router();
 
 const upload = multer({ dest: path.resolve(__dirname, '../public/images/') });
 
+router.get('/login', (req, res) => {
+  res.render('login');
+});
+
 router.post('/login', (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -38,7 +42,7 @@ router.post('/login', (req, res, next) => {
         }
 
         if (results1.rowCount) {
-          req.session.user_id = results1.rows[0].user_id;
+          session.user_id = results1.rows[0].user_id;
           res.redirect('/welcome');
         } else {
           res.redirect('/login');
@@ -61,11 +65,11 @@ router.get('/register', (req, res) => {
 router.post('/register', upload.single('profile'), (req, res, next) => {
   const username = req.body.username;
   const email = req.body.email;
-  const mobileno = req.body.mobileno;
+  const mobilenumber = req.body.mobilenumber;
   const password = req.body.password;
 
   req.checkBody('username', 'Username is required').notEmpty();
-  req.checkBody('mobileno', 'Mobile No is required').notEmpty();
+  req.checkBody('mobilenumber', 'Mobile No is required').notEmpty();
   if (req.body.email !== '') {
     req.checkBody('email', 'Email is not valid').isEmail();
   } else {
@@ -95,11 +99,11 @@ router.post('/register', upload.single('profile'), (req, res, next) => {
     .set('username', username)
     .set('email', email)
     .set('image', photo)
-    .set('mobilenumber', mobileno)
+    .set('mobilenumber', mobilenumber)
     .set('password', password)
     .toParam();
 
-    DB.executeQuery(query, (error, results) => {
+    DB.executeQuery(query, (error) => {
       if (error) {
         next(error);
         return;
@@ -112,19 +116,27 @@ router.post('/register', upload.single('profile'), (req, res, next) => {
 router.post('/tweet', (req, res, next) => {
   const tweet = req.body.tweet;
   const session = req.session;
-  const query = DB.builder()
-  .insert()
-  .into('tweet')
-  .set('tweet', tweet)
-  .set('userid', session.user_id)
-  .toParam();
-  DB.executeQuery(query, (error) => {
-    if (error) {
-      next(error);
-      return;
-    }
-    res.redirect('/welcome');
-  });
+  req.checkBody('tweet', 'Invalid length of tweet min= 8 max= 140').notEmpty().len(2, 140);
+  const errors = req.validationErrors();
+  if (errors) {
+    res.render('register', {
+      errors,
+    });
+  } else {
+    const query = DB.builder()
+    .insert()
+    .into('tweet')
+    .set('tweet', tweet)
+    .set('userid', session.user_id)
+    .toParam();
+    DB.executeQuery(query, (error) => {
+      if (error) {
+        next(error);
+        return;
+      }
+      res.redirect('/welcome');
+    });
+  }
 });
 
 router.get('/deletetweet/:id', (req, res, next) => {
@@ -175,9 +187,9 @@ router.get('/welcome', (req, res, next) => {
       .from('follower')
       .where('login_user_id = ?', session.user_id))
       .toParam();
-      DB.executeQuery(query, (error, follow) => {
-        if (error) {
-          next(error);
+      DB.executeQuery(query, (errorresults, follow) => {
+        if (errorresults) {
+          next(errorresults);
           return;
         }
         query = DB.builder()
@@ -197,9 +209,9 @@ router.get('/welcome', (req, res, next) => {
         .where('login_user_id = ?', session.user_id)), session.user_id)
         .order('time', false)
         .toParam();
-        DB.executeQuery(query, (error, tweets) => {
-          if (error) {
-            next(error);
+        DB.executeQuery(query, (errorfollow, tweets) => {
+          if (errorfollow) {
+            next(errorfollow);
             return;
           }
           query = DB.builder()
@@ -207,9 +219,9 @@ router.get('/welcome', (req, res, next) => {
           .from('follower')
           .where('login_user_id = ?', session.user_id)
           .toParam();
-          DB.executeQuery(query, (error, c) => {
-            if (error) {
-              next(error);
+          DB.executeQuery(query, (errortweets, c) => {
+            if (errortweets) {
+              next(errortweets);
               return;
             }
             res.render('welcome', {
@@ -225,10 +237,6 @@ router.get('/welcome', (req, res, next) => {
   } else {
     res.redirect('/login');
   }
-});
-
-router.get('/login', (req, res) => {
-  res.render('login');
 });
 
 router.get('/profilechange', (req, res, next) => {
@@ -258,9 +266,9 @@ router.get('/profilechange', (req, res, next) => {
       .from('follower'), 'f', 'r.user_id = f.follower_id')
       .where('login_user_id = ?', session.user_id)
       .toParam();
-      DB.executeQuery(query, (error, users) => {
-        if (error) {
-          next(error);
+      DB.executeQuery(query, (errorresults, users) => {
+        if (errorresults) {
+          next(errorresults);
           return;
         }
         query = DB.builder()
@@ -278,9 +286,9 @@ router.get('/profilechange', (req, res, next) => {
         .where('user_id = ?', session.user_id)
         .order('time', false)
         .toParam();
-        DB.executeQuery(query, (error, tweets) => {
-          if (error) {
-            next(error);
+        DB.executeQuery(query, (errorusers, tweets) => {
+          if (errorusers) {
+            next(errorusers);
             return;
           }
           query = DB.builder()
@@ -288,9 +296,9 @@ router.get('/profilechange', (req, res, next) => {
           .from('follower')
           .where('login_user_id = ?', session.user_id)
           .toParam();
-          DB.executeQuery(query, (error, c) => {
-            if (error) {
-              next(error);
+          DB.executeQuery(query, (errortweets, c) => {
+            if (errortweets) {
+              next(errortweets);
               return;
             }
             res.render('profilechange', {
@@ -343,7 +351,6 @@ router.post('/follower', (req, res, next) => {
       next(error);
       return;
     }
-
     res.redirect('/welcome');
   });
 });
@@ -373,14 +380,12 @@ router.post('/profilepictureupload', upload.single('thumbnail'), (req, res, next
   }
 
   const query = DB.builder()
-  .update()
-  .table('users')
-  .set('image', photo)
-  .where('user_id = ?', req.session.user_id)
-  .toParam();
-  // console.log(query);
-
-  DB.executeQuery(query, (error, results) => {
+    .update()
+    .table('users')
+    .set('image', photo)
+    .where('user_id = ?', req.session.user_id)
+    .toParam();
+  DB.executeQuery(query, (error) => {
     if (error) {
       next(error);
       return;

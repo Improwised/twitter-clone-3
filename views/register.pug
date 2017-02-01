@@ -24,7 +24,8 @@ block content
     .col-md-12.page-canvas
       .signin-wrapper
         h2(style ="color : #00aced") Join twitter Today!!
-        form(action='/register' , onsubmit='validation()', method="post", class='form-horizontal ' enctype='multipart/form-data')
+        form(action='/register' , onsubmit='validation()', method="post", class='form-horizontal' ,enctype='multipart/form-data')
+
           div(class='form-content' text-align="center")
             div(class='form-group')
               div(class='col-sm-4')
@@ -38,7 +39,7 @@ block content
 
             div(class='form-group')
               div(class='col-sm-4')
-                input(type="text", name="mobileno", maxlength="10" class='form-control form-control-inline', placeholder='Mobile Number')
+                input(type="text", name="mobilenumber", maxlength="10" class='form-control form-control-inline', placeholder='Mobile Number')
 
               div(class='col-sm-4')
                 -if(errors)
@@ -69,12 +70,8 @@ block content
             div(class='form-group')
               div(class='col-sm-4')
                 input(type="password", id="confirmPassword", onchange='check_pass()' name="confirmpassword", class='form-control form-control-inline' placeholder='Confirm password')
-
-              //- div(class='col-sm-4')
-              //-   -if(errors)
-              //-     each error in errors
-              //-       -if(error.param == 'username')
-              //-         div.msgalert= error.msg
+                div
+                  span#passwordfErr
 
             div(class='form-group')
               div(class='col-sm-4')
@@ -83,6 +80,12 @@ block content
             div(class='form-group')
               div(class='col-sm-4')
                 input(type='file', name='profile' ,style ="color : #00aced;")
+
+              div
+                -if(errors)
+                  each error in errors
+                    -if(error.param == 'profile')
+                      p= error.msg
 
             div(class='form-group')
               .col-sm-4

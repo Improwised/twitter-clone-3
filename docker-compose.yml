@@ -3,10 +3,9 @@ services:
   db:
     image: postgres:9-alpine
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: parita
-      POSTGRES_USER: parita
+      POSTGRES_PASSWORD: myownpassword
+      POSTGRES_USER: hemangi
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
-

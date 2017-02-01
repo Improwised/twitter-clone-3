@@ -24,11 +24,11 @@ block content
     .fb-profile
       img.fb-image-lg(align='left', src='./images/cover.jpg', alt='Profile image example' width ="100%")
       each i in results
-        img.fb-image-profile.thumbnail(align='left', src='./images/'+ i.image)
+        img.fb-image-profile.thumbnail(align='left', src='./images/'+ i.image ,height = "228px" width="90px" )
         .fb-profile-text
           h1(style ="color : #00aced;")= i.username
   .container
-    .page-canvas
+    .page-canvas(style = "padding :5px;")
       .row
         .col-sm-3
           .profile-usermenu
@@ -50,48 +50,51 @@ block content
 
         .col-sm-6
           .profile-content
-            .container
-              .row
-                p(style ="color : #00aced;")
-                  i.glyphicon.glyphicon-pencil &nbsp;
-                  | What's in your mind ??
-              .row
-                .col-sm-5
-                  .widget-area.no-padding.blank
-                    .status-upload
-
+            .row
+              p(style ="color : #00aced;")
+                i.glyphicon.glyphicon-pencil &nbsp;
+                | Tweet here  !!
+            .row
+              .widget-area.no-padding.blank
+                .status-upload
+                  .page-canvas
                       form(action='/tweet', method='post')
 
-                        textarea(name='tweet' placeholder='What are you doing right now?')
+                        textarea(name='tweet' placeholder='What are you doing right now?', maxlength="140" , required)
 
                         button.btn.btn-info(type='submit')
                           i.fa.fa-share
                           |  tweet
-              .row
-                .col-sm-5
-                  p &nbsp;
-              .row
-                h4(style ="color : #00aced;") Your tweets are here !!!!
-                each row in tweets
-                  .media.block-update-card
-                    a.pull-left(href='#')
-                      img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
-                    .media-body.update-card-body
-                      h5.media-heading(style ="color : #00aced;")=row.username + ' · ' + row.time
-                      p= row.tweet
-                      a(href='/deletetweet/' + row.id)
-                        i.glyphicon.glyphicon-trash
+
+            .row
+              h4(style ="color : #00aced;") Your tweets are here !!!!
+              each row in tweets
+                p
+                .page-canvas(style = "padding :5px;")
+                  p
+                  - const a = new Date(row.time)
+                    .media.block-update-card
+                      a.pull-left(href='#')
+                        img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "90px" width="90px")
+                      .media-body.update-card-body
+                        h5.media-heading(style ="color : #00aced;")=row.username
+                        p= row.tweet
+                        p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
+                        a(href='/deletetweet/' + row.id)
+                          i.glyphicon.glyphicon-trash
 
         .col-sm-3
           .profile-content
             .sidebar-menu
               h4(style ="color : #00aced;") Your followers!!!!
               each rows in users
-                .media.block-update-card
-                    a.pull-left(href='#')
-                      img.media-object.update-card-MDimentions(src='./images/'+ rows.image, height = "60px" width="60px")
-                    .media-body.update-card-body
-                      h5.media-heading(style ="color : #00aced")= rows.username
-                      form(method="post" action="/unfollow")
-                        input(type="hidden",name="followerId",value=rows.id)
-                        button.btn.btn-info(type="submit") Unfollow
+                p
+                .page-canvas(style = "padding :5px;")
+                  .media.block-update-card
+                      a.pull-left(href='#')
+                        img.media-object.update-card-MDimentions(src='./images/'+ rows.image, height = "60px" width="60px")
+                      .media-body.update-card-body
+                        h5.media-heading(style ="color : #00aced; font-size : 15px;")= rows.username
+                        form(method="post" action="/unfollow")
+                          input(type="hidden",name="followerId",value=rows.id)
+                          button.btn.btn-info(type="submit") Unfollow
