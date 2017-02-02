@@ -75,11 +75,12 @@ block content
                   - const a = new Date(row.time)
                     .media.block-update-card
                       a.pull-left(href='#')
-                        img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "90px" width="90px")
+                        img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
                       .media-body.update-card-body
                         h5.media-heading(style ="color : #00aced;")=row.username
                         p= row.tweet
-                        img.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "184px" width="400px")
+                        -if(row.imagetweet)
+                          img.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "400px" width="400px")
                         p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
                         a(href='/deletetweet/' + row.id)
                           i.glyphicon.glyphicon-trash

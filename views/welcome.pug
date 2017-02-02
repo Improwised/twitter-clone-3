@@ -89,8 +89,9 @@ block content
                             .media-body.update-card-body
                               h5.media-heading(style ="color : #00aced;")=row.username
                               p= row.tweet
+                              br
                             -if(row.imagetweet)
-                              img.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "400px" width="400px")
+                              img.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "400px" width="448px")
 
                               p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
 
