@@ -13,12 +13,3 @@ lint:
 	jsonlint -q -c ${JSON_SRC}
 	eslint ${JS_SRC} ${ESLINT_ARGS}
 
-install:
-	npm i
-
-test:install
-	PGDB_DB=twitterTesting mocha
-
-run:
-	node app
-
