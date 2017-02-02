@@ -189,7 +189,7 @@ describe('POST/unfollow', function () {
 describe('POST/profilepictureupload', function () {
   it('it should response profilechange.pug page', (done) => {
     const users = {
-      thumbnail: '../public/images/1.jpeg',
+      image: '../public/images/1.jpeg',
       user_id: '1',
     };
     request(app)
@@ -215,12 +215,12 @@ describe('POST/editprofile', function () {
     request(app)
       .post('/editprofile')
       .send(users)
-      .expect(200)
+      .expect(302)
       .end((err, res) => {
         if (err) {
           done(err);
         } else {
-          res.status.should.be.equal(200);
+          res.status.should.be.equal(302);
           done();
         }
       });
