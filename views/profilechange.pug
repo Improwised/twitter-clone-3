@@ -61,7 +61,7 @@ block content
                       form(action='/tweet', method='post')
 
                         textarea(name='tweet' placeholder='What are you doing right now?', maxlength="140" , required)
-
+                        input(type='file', name='imagetweet' ,style ="color : #00aced;")
                         button.btn.btn-info(type='submit')
                           i.fa.fa-share
                           |  tweet
@@ -79,6 +79,7 @@ block content
                       .media-body.update-card-body
                         h5.media-heading(style ="color : #00aced;")=row.username
                         p= row.tweet
+                        img.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "184px" width="400px")
                         p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
                         a(href='/deletetweet/' + row.id)
                           i.glyphicon.glyphicon-trash

@@ -108,21 +108,30 @@ router.post('/register', upload.single('profile'), (req, res, next) => {
   }
 });
 
-router.post('/tweet', (req, res, next) => {
+router.post('/tweet',  upload.single('imagetweet'),(req, res, next) => {
   const tweet = req.body.tweet;
   const session = req.session;
   req.checkBody('tweet', 'Invalid length of tweet min= 8 max= 140').notEmpty().len(2, 140);
+
   const errors = req.validationErrors();
+
   if (errors) {
     res.render('register', {
       errors,
     });
   } else {
+     let photo = '';
+      if (req.file) {
+        photo = req.file.filename;
+      } else {
+        photo = '';
+      }
     const query = DB.builder()
     .insert()
     .into('tweet')
     .set('tweet', tweet)
     .set('userid', session.user_id)
+    .set('imagetweet', photo)
     .toParam();
     DB.executeQuery(query, (error) => {
       if (error) {
@@ -195,6 +204,7 @@ router.get('/welcome', (req, res, next) => {
         .select()
         .field('username')
         .field('tweet')
+        .field('imagetweet')
         .field('time')
         .field('id')
         .field('image')
@@ -283,6 +293,7 @@ router.get('/profilechange', (req, res, next) => {
         .field('time')
         .field('username')
         .field('image')
+        .field('imagetweet')
         .field('user_id')
         .field('id')
         .from('tweet', 't')
