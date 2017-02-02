@@ -4,3 +4,6 @@ node_js:
   - "4"
 services:
  - postgresql
+before_script:
+  - psql -c 'create database twitterTesting;' -U postgres -w
+  - psql -f 'scripttest.sql'
