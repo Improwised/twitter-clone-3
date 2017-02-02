@@ -30,13 +30,23 @@ block content
         .form-group
           .col-sm-5
             input#inputEmail3.form-control(type='text', name='email', placeholder='Email')
+          .col-sm-5
+            -if(errors)
+              each error in errors
+                -if(error.param == 'email')
+                  div.msgalert= error.msg
         .form-group
           .col-sm-5
             input#inputPassword3.form-control(type='password', name='password', placeholder='Password')
+          .col-sm-5
+            -if(errors)
+              each error in errors
+                -if(error.param == 'password')
+                  div.msgalert= error.msg
         .form-group
-          .col-sm-12
+          .col-sm-5
             .col
-              button.btn.btn-info(align='left' type='submit') Log in
+             input.form-control.button.btn-info(type="submit", name="Submit" ,value ="Log In")
             .col-sm-7
               .checkbox
                 label

@@ -72,12 +72,12 @@ describe('POST/login', function () {
     request(app)
     .post('/login')
     .send(users)
-    .expect(302)
+    .expect(200)
     .end((err, res) => {
       if (err) {
         done(err);
       } else {
-        res.status.should.be.equal(302);
+        res.status.should.be.equal(200);
         done();
       }
     });
@@ -131,6 +131,7 @@ describe('POST/tweet', function () {
     const users = {
       userid: '1',
       tweet: 'parita',
+      imagetweet: 'dog.jpg',
     };
     request(app)
     .post('/tweet')

@@ -12,46 +12,61 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login', (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const email = req.sanitize('email').trim();
+  const password = req.sanitize('password').trim();
+  if (req.body.email) {
+    req.checkBody('email', 'Email is not valid').isEmail();
+  } else {
+    req.checkBody('email', 'Email is required').notEmpty();
+  }
+  req.checkBody('password', 'Password is required').notEmpty();
   const session = req.session;
+
   let query;
 
-  query = DB.builder()
-  .select()
-  .from('users')
-  .where('email = ?', email)
-  .toParam();
-  DB.executeQuery(query, (error, results) => {
-    if (error) {
-      next(error);
-      return;
-    }
+  const errors = req.validationErrors();
 
-    if (results.rowCount) {
-      query = DB.builder()
-      .select()
-      .from('users')
-      .where('email = ?', email)
-      .where('password = ?', password)
-      .toParam();
-      DB.executeQuery(query, (err, results1) => {
-        if (err) {
-          next(err);
-          return;
-        }
+  if (errors) {
+    res.render('login', {
+      errors,
+    });
+  } else {
+    query = DB.builder()
+    .select()
+    .from('users')
+    .where('email = ?', email)
+    .toParam();
+    DB.executeQuery(query, (error, results) => {
+      if (error) {
+        next(error);
+        return;
+      }
 
-        if (results1.rowCount) {
-          session.user_id = results1.rows[0].user_id;
-          res.redirect('/welcome');
-        } else {
-          res.redirect('/login');
-        }
-      });
-    } else {
-      res.redirect('/register');
-    }
-  });
+      if (results.rowCount) {
+        query = DB.builder()
+        .select()
+        .from('users')
+        .where('email = ?', email)
+        .where('password = ?', password)
+        .toParam();
+        DB.executeQuery(query, (err, results1) => {
+          if (err) {
+            next(err);
+            return;
+          }
+
+          if (results1.rowCount) {
+            session.user_id = results1.rows[0].user_id;
+            res.redirect('/welcome');
+          } else {
+            res.redirect('/login');
+          }
+        });
+      } else {
+        res.redirect('/register');
+      }
+    });
+  }
 });
 
 router.get('/', (req, res) => {
@@ -113,21 +128,30 @@ router.post('/register', upload.single('profile'), (req, res, next) => {
   }
 });
 
-router.post('/tweet', (req, res, next) => {
+router.post('/tweet', upload.single('imagetweet'), (req, res, next) => {
   const tweet = req.body.tweet;
   const session = req.session;
   req.checkBody('tweet', 'Invalid length of tweet min= 8 max= 140').notEmpty().len(2, 140);
+
   const errors = req.validationErrors();
+
   if (errors) {
     res.render('register', {
       errors,
     });
   } else {
+    let photo = '';
+    if (req.file) {
+      photo = req.file.filename;
+    } else {
+      photo = '';
+    }
     const query = DB.builder()
     .insert()
     .into('tweet')
     .set('tweet', tweet)
     .set('userid', session.user_id)
+    .set('imagetweet', photo)
     .toParam();
     DB.executeQuery(query, (error) => {
       if (error) {
@@ -196,6 +220,7 @@ router.get('/welcome', (req, res, next) => {
         .select()
         .field('username')
         .field('tweet')
+        .field('imagetweet')
         .field('time')
         .field('id')
         .field('image')
@@ -277,6 +302,7 @@ router.get('/profilechange', (req, res, next) => {
         .field('time')
         .field('username')
         .field('image')
+        .field('imagetweet')
         .field('user_id')
         .field('id')
         .from('tweet', 't')

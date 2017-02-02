@@ -65,10 +65,12 @@ block content
                       .widget-area.no-padding.blank
                         .status-upload
                           .page-canvas
-                              form(action='/tweet', method='post')
+                              form(action='/tweet',enctype='multipart/form-data', method='post')
 
                                 textarea(name='tweet' placeholder='What are you doing right now?', maxlength="140" , required)
-
+                                div(class='form-group')
+                                  div(class='col-sm-4')
+                                    input(type='file', name='imagetweet' ,style ="color : #00aced;")
                                 button.btn.btn-info(type='submit')
                                   i.fa.fa-share
                                   |  tweet
@@ -84,10 +86,14 @@ block content
                           - const a = new Date(row.time)
                           .media.block-update-card
                             a.pull-left(href='#')
-                              img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "75px" width="75px")
+                              img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
                             .media-body.update-card-body
                               h5.media-heading(style ="color : #00aced;")=row.username
                               p= row.tweet
+                              br
+                            -if(row.imagetweet)
+                              img.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "400px" width="448px")
+
                               p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
 
             .col-sm-3(style ="padding-top :30px")

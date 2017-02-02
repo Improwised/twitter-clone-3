@@ -83,7 +83,8 @@ CREATE TABLE tweet (
     userid integer,
     tweet character varying(140),
     "time" timestamp without time zone DEFAULT now(),
-    id integer DEFAULT nextval('tweet_id_seq'::regclass) NOT NULL
+    id integer DEFAULT nextval('tweet_id_seq'::regclass) NOT NULL,
+    imagetweet text
 );
 
 
@@ -131,14 +132,14 @@ COPY follower (login_user_id, follower_id, id) FROM stdin;
 -- Name: follower_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hemangi
 --
 
-SELECT pg_catalog.setval('follower_id_seq', 28, true);
+SELECT pg_catalog.setval('follower_id_seq', 48, true);
 
 
 --
 -- Data for Name: tweet; Type: TABLE DATA; Schema: public; Owner: hemangi
 --
 
-COPY tweet (userid, tweet, "time", id) FROM stdin;
+COPY tweet (userid, tweet, "time", id, imagetweet) FROM stdin;
 \.
 
 
@@ -146,7 +147,7 @@ COPY tweet (userid, tweet, "time", id) FROM stdin;
 -- Name: tweet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hemangi
 --
 
-SELECT pg_catalog.setval('tweet_id_seq', 28, true);
+SELECT pg_catalog.setval('tweet_id_seq', 45, true);
 
 
 --
@@ -161,7 +162,7 @@ COPY users (username, mobilenumber, email, password, image, user_id) FROM stdin;
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hemangi
 --
 
-SELECT pg_catalog.setval('users_id_seq', 4, true);
+SELECT pg_catalog.setval('users_id_seq', 24, true);
 
 
 --

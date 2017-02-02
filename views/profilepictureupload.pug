@@ -35,7 +35,9 @@ block content
               img.thumbnail(src='./images/'+ images.image ,width ="200px" height="200px")
 
               form(method='post', enctype='multipart/form-data', action='/profilepictureupload')
+
                 input(type='file', name='thumbnail' ,style = "margin : -5px 0px 10px 0px ;color : #00aced;", required)
+
                 input(class="btn btn-info" type='submit',name="submit")
 
           .col-md-8
