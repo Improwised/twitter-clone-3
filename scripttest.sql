@@ -53,9 +53,9 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE follower (
-    id integer DEFAULT nextval('follower_id_seq'::regclass) NOT NULL,
     login_user_id integer,
-    follower_id integer
+    follower_id integer,
+    id integer DEFAULT nextval('follower_id_seq'::regclass) NOT NULL
 );
 
 
@@ -80,10 +80,10 @@ ALTER TABLE tweet_id_seq OWNER TO hemangi;
 --
 
 CREATE TABLE tweet (
-    id integer DEFAULT nextval('tweet_id_seq'::regclass) NOT NULL,
+    userid integer,
     tweet character varying(140),
     "time" timestamp without time zone DEFAULT now(),
-    userid integer
+    id integer DEFAULT nextval('tweet_id_seq'::regclass) NOT NULL
 );
 
 
@@ -108,12 +108,12 @@ ALTER TABLE users_id_seq OWNER TO hemangi;
 --
 
 CREATE TABLE users (
-    user_id integer DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
     username text,
     mobilenumber integer,
     email text,
     password text,
-    image text
+    image text,
+    user_id integer DEFAULT nextval('users_id_seq'::regclass) NOT NULL
 );
 
 
@@ -123,7 +123,7 @@ ALTER TABLE users OWNER TO hemangi;
 -- Data for Name: follower; Type: TABLE DATA; Schema: public; Owner: hemangi
 --
 
-COPY follower (id, login_user_id, follower_id) FROM stdin;
+COPY follower (login_user_id, follower_id, id) FROM stdin;
 \.
 
 
@@ -131,14 +131,14 @@ COPY follower (id, login_user_id, follower_id) FROM stdin;
 -- Name: follower_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hemangi
 --
 
-SELECT pg_catalog.setval('follower_id_seq', 73, true);
+SELECT pg_catalog.setval('follower_id_seq', 28, true);
 
 
 --
 -- Data for Name: tweet; Type: TABLE DATA; Schema: public; Owner: hemangi
 --
 
-COPY tweet (id, tweet, "time", userid) FROM stdin;
+COPY tweet (userid, tweet, "time", id) FROM stdin;
 \.
 
 
@@ -146,14 +146,14 @@ COPY tweet (id, tweet, "time", userid) FROM stdin;
 -- Name: tweet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hemangi
 --
 
-SELECT pg_catalog.setval('tweet_id_seq', 60, true);
+SELECT pg_catalog.setval('tweet_id_seq', 28, true);
 
 
 --
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: hemangi
 --
 
-COPY users (user_id, username, mobilenumber, email, password, image) FROM stdin;
+COPY users (username, mobilenumber, email, password, image, user_id) FROM stdin;
 \.
 
 
@@ -161,7 +161,15 @@ COPY users (user_id, username, mobilenumber, email, password, image) FROM stdin;
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hemangi
 --
 
-SELECT pg_catalog.setval('users_id_seq', 22, true);
+SELECT pg_catalog.setval('users_id_seq', 4, true);
+
+
+--
+-- Name: follower follower_pkey; Type: CONSTRAINT; Schema: public; Owner: hemangi
+--
+
+ALTER TABLE ONLY follower
+    ADD CONSTRAINT follower_pkey PRIMARY KEY (id);
 
 
 --
@@ -178,14 +186,6 @@ ALTER TABLE ONLY tweet
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
-
-
---
--- Name: tweet tweet_userid_foreign; Type: FK CONSTRAINT; Schema: public; Owner: hemangi
---
-
-ALTER TABLE ONLY tweet
-    ADD CONSTRAINT tweet_userid_foreign FOREIGN KEY (userid) REFERENCES users(user_id) ON DELETE CASCADE;
 
 
 --

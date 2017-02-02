@@ -63,13 +63,14 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/register', upload.single('profile'), (req, res, next) => {
-  const username = req.body.username;
-  const email = req.body.email;
-  const mobilenumber = req.body.mobilenumber;
-  const password = req.body.password;
+  const username = req.sanitize('username').trim();
+  const email = req.sanitize('email').trim();
+  const mobilenumber = req.sanitize('mobilenumber').trim();
+  const password = req.sanitize('password').trim();
+  const confirmpassword = req.sanitize('confirmpassword').trim();
 
   req.checkBody('username', 'Username is required').notEmpty();
-  req.checkBody('mobilenumber', 'Mobile No is required').notEmpty();
+  req.checkBody('mobilenumber', 'Mobile Number is required').notEmpty();
   if (req.body.email !== '') {
     req.checkBody('email', 'Email is not valid').isEmail();
   } else {
@@ -372,25 +373,45 @@ router.post('/unfollow', (req, res, next) => {
 });
 
 router.post('/profilepictureupload', upload.single('thumbnail'), (req, res, next) => {
+  const session = req.session;
   let photo = '';
-  if (req.file) {
-    photo = req.file.filename;
-  } else {
-    photo = '';
-  }
-
-  const query = DB.builder()
-    .update()
-    .table('users')
-    .set('image', photo)
-    .where('user_id = ?', req.session.user_id)
-    .toParam();
-  DB.executeQuery(query, (error) => {
+  let query;
+  // if (req.file) {
+  //   photo = req.file.filename;
+  // } else {
+  //   photo = '';
+  // }
+  query = DB.builder()
+  .select()
+  .from('users')
+  .where('user_id = ?', session.user_id)
+  .toParam();
+  DB.executeQuery(query, (error, results) => {
     if (error) {
       next(error);
       return;
+    } else {
+      if (req.file) {
+        photo = req.file.filename;
+      } else {
+        photo = results.rows[0].image;
+      }
+      // (results.rows[0].image);
+      query = DB.builder()
+      .update()
+      .table('users')
+      .set('image', photo)
+      .where('user_id = ?', req.session.user_id)
+      .toParam();
+      DB.executeQuery(query, (error) => {
+        if (error) {
+          next(error);
+          return;
+        }
+
+        res.redirect('/profilechange');
+      });
     }
-    res.redirect('/profilechange');
   });
 });
 
@@ -400,20 +421,24 @@ router.post('/editprofile', (req, res, next) => {
   const username = req.body.username;
   const email = req.body.email;
   const mobileno = req.body.mobileno;
-  const password = req.body.confirmpassword;
-
-  req.checkBody('username', 'Username is required').notEmpty();
-  req.checkBody('mobileno', 'Mobile No is required').notEmpty();
-  req.checkBody('email', 'Email is required').notEmpty();
-  req.checkBody('email', 'Email is not valid').isEmail();
-  req.checkBody('password', 'Password is required').notEmpty();
-
-  const errors = req.validationErrors();
-  if (errors) {
-    res.render('register', {
-      errors,
-    });
+  let password = '';
+  if (req.body.confirmpassword !== '') {
+    password = req.body.confirmpassword;
   } else {
+    password = req.body.password;
+  }
+  // req.checkBody('username', 'Username is required').notEmpty();
+  // req.checkBody('mobileno', 'Mobile No is required').notEmpty();
+  // req.checkBody('email', 'Email is required').notEmpty();
+  // req.checkBody('email', 'Email is not valid').isEmail();
+  // req.checkBody('password', 'Password is required').notEmpty();
+
+  // const errors = req.validationErrors();
+  // if (errors) {
+  //   res.render('register', {
+  //     errors,
+  //   });
+  // } else {
     query = DB.builder()
     .update()
     .table('users')
@@ -428,9 +453,9 @@ router.post('/editprofile', (req, res, next) => {
         next(error);
         return;
       }
-      res.render('profilechange');
+      res.redirect('/welcome');
     });
-  }
+  // }
 });
 
 module.exports = router;

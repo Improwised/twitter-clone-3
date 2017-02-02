@@ -44,7 +44,7 @@ block content
               div(class='col-sm-4')
                 -if(errors)
                   each error in errors
-                    -if(error.param == 'mobileno')
+                    -if(error.param == 'mobilenumber')
                       div.msgalert= error.msg
 
             div(class='form-group')
@@ -70,8 +70,13 @@ block content
             div(class='form-group')
               div(class='col-sm-4')
                 input(type="password", id="confirmPassword", onchange='check_pass()' name="confirmpassword", class='form-control form-control-inline' placeholder='Confirm password')
-                div
-                  span#passwordfErr
+
+              div(class='col-sm-4')
+                -if(errors)
+                  each error in errors
+                    -if(error.param == 'confirmpassword')
+                      div.msgalert= error.msg
+
 
             div(class='form-group')
               div(class='col-sm-4')
