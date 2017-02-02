@@ -1,0 +1,57 @@
+extends ./layouts/main.pug
+
+block content
+  h1= title
+  .container.head
+    ul.nav.nav-tabs
+        li
+          a(href='/')
+            i.glyphicon.glyphicon-home(style ="color : #00aced;") &nbsp;
+              | Home
+        li
+          a(href='/register')
+            i.glyphicon.glyphicon-pencil(style ="color : #00aced;") &nbsp;
+                | SignUp
+        li.active
+          a(href='/login')
+            i.glyphicon.glyphicon-user(style ="color : #00aced;") &nbsp;
+                |LogIn
+        li
+          a(href='https://twitter.com/about')
+            i.glyphicon.glyphicon-search(style ="color : #00aced;") &nbsp;
+                | About us
+  .container
+    h1= title
+    form.form-horizontal.page-canvas(action='/login' , method="post")
+      .signin-wrapper
+        .form-group
+          .col-sm-8
+            h2(style ="color : #00aced;") Log in to Twitter
+        .form-group
+          .col-sm-5
+            input#inputEmail3.form-control(type='text', name='email', placeholder='Email')
+          .col-sm-5
+            -if(errors)
+              each error in errors
+                -if(error.param == 'email')
+                  div.msgalert= error.msg
+        .form-group
+          .col-sm-5
+            input#inputPassword3.form-control(type='password', name='password', placeholder='Password')
+          .col-sm-5
+            -if(errors)
+              each error in errors
+                -if(error.param == 'password')
+                  div.msgalert= error.msg
+        .form-group
+          .col-sm-5
+            .col
+             input.form-control.button.btn-info(type="submit", name="Submit" ,value ="Log In")
+            .col-sm-7
+              .checkbox
+                label
+                  input(type='checkbox' value='1' name='remember_me' checked='checked')
+                  | Remember me
+                  span.separator &middot;&nbsp;
+                  form(action='/retrive_password', method='post')
+                    a.button(type='submit', style ="color : #00aced;") Forgot password?

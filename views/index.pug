@@ -2,3 +2,39 @@ extends ./layouts/main.pug
 
 block content
   h1= title
+  div
+  .container.head
+      ul.nav.nav-tabs
+        li.active
+          a(href='/')
+            i.glyphicon.glyphicon-home(style ="color : #00aced;") &nbsp;
+              | Home
+        li
+          a(href='https://twitter.com/about')
+            i.glyphicon.glyphicon-search(style ="color : #00aced;") &nbsp;
+                | About us
+  .container
+    img(src='./images/cover.jpg',width="100%" height="300px", alt='Responsive image')
+
+  .container
+    .page-canvas
+      .container(style = "margin-top: 30px ;")
+        .rows
+          .col-lg-6
+             a(href='/login')
+              button.btn.btn-info.btn-lg(style = "float :right") Log in
+          .col-lg-6
+             p(style ="float : left") you already have an account??
+      .container(style = "margin: 30px 0px 30px 0px")
+        .rows
+          .col-lg-6
+             a(href='/register')
+              button.btn.btn-info.btn-lg(style = "float :right") sign Up
+          .col-lg-6
+             p(style ="float : left") Create you account
+
+      nav(class="navbar navbar-default navbar-fixed-bottom" id="footer_nav")
+        .container-fluid.footer_c
+          ul.nav.navbar-nav
+            li
+              h5(style='color:#4b4b4b;  font-size:0.9em; margin : 5px 0px 5px 850px') CopyRights@

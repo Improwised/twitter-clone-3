@@ -1,0 +1,117 @@
+extends ./layouts/main.pug
+
+block content
+  h1= title
+  .container.head
+      ul.nav.nav-tabs
+        li
+          a(href='/')
+            i.glyphicon.glyphicon-home(style ="color : #00aced;") &nbsp;
+              | Home
+        li.active
+          a(href='/register')
+            i.glyphicon.glyphicon-pencil(style ="color : #00aced;") &nbsp;
+                | SignUp
+        li
+          a(href='/login')
+            i.glyphicon.glyphicon-user(style ="color : #00aced;") &nbsp;
+                |LogIn
+        li
+          a(href='https://twitter.com/about')
+            i.glyphicon.glyphicon-search(style ="color : #00aced;") &nbsp;
+                | About us
+  .container
+    .col-md-12.page-canvas
+      .signin-wrapper
+        h2(style ="color : #00aced") Join twitter Today!!
+        form(action='/register' , onsubmit='validation()', method="post", class='form-horizontal' ,enctype='multipart/form-data')
+
+          div(class='form-content' text-align="center")
+            div(class='form-group')
+              div(class='col-sm-4')
+                input(type="text", id="name", name="username", class='form-control form-control-inline', placeholder='username')
+
+              div(class='col-sm-4')
+                -if(errors)
+                  each error in errors
+                    -if(error.param == 'username')
+                      div.msgalert= error.msg
+
+            div(class='form-group')
+              div(class='col-sm-4')
+                input(type="text", name="mobilenumber", maxlength="10" class='form-control form-control-inline', placeholder='Mobile Number')
+
+              div(class='col-sm-4')
+                -if(errors)
+                  each error in errors
+                    -if(error.param == 'mobilenumber')
+                      div.msgalert= error.msg
+
+            div(class='form-group')
+              div(class='col-sm-4')
+                input(type="email", name="email", class='form-control form-control-inline', placeholder='email')
+
+              div(class='col-sm-4')
+                -if(errors)
+                  each error in errors
+                    -if(error.param == 'email')
+                      div.msgalert= error.msg
+
+            div(class='form-group')
+              div(class='col-sm-4')
+                input(type="password", id="password", name="password", class='form-control form-control-inline', placeholder='password')
+
+              div(class='col-sm-4')
+                -if(errors)
+                  each error in errors
+                    -if(error.param == 'password')
+                      div.msgalert= error.msg
+
+            div(class='form-group')
+              div(class='col-sm-4')
+                input(type="password", id="confirmPassword", onchange='check_pass()' name="confirmpassword", class='form-control form-control-inline' placeholder='Confirm password')
+
+              div(class='col-sm-4')
+                -if(errors)
+                  each error in errors
+                    -if(error.param == 'confirmpassword')
+                      div.msgalert= error.msg
+
+
+            div(class='form-group')
+              div(class='col-sm-4')
+                h4(style ="color : #00aced") choose your profile picture
+
+            div(class='form-group')
+              div(class='col-sm-4')
+                input(type='file', name='profile' ,style ="color : #00aced;")
+
+              div
+                -if(errors)
+                  each error in errors
+                    -if(error.param == 'profile')
+                      p= error.msg
+
+            div(class='form-group')
+              .col-sm-4
+                .checkbox
+                  label
+                    input(type="checkbox")
+                    | Tailor Twitter based on my recent website visits &nbsp;
+                  a(href = "https://support.twitter.com/articles/20169421" style ="color : #00aced;")
+                    | Learn more.
+            div(class="form-group")
+              .col-sm-4
+                input.form-control.button.btn-info(type="submit", name="Submit" ,value ="Sign In")
+    script.
+      //- include ../public/js/javascript.js
+      function check_pass(){
+        if (document.getElementById('password').value==document.getElementById('confirmPassword').value) {
+          document.getElementById('submit').disabled = false;
+        }
+        else {
+          document.getElementById('submit').disabled = true;
+          document.getElementById('passwordfErr').innerHTML = "password mismatch";
+        }
+      }
+
