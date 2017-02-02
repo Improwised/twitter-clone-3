@@ -16,25 +16,20 @@ twitter website built using Node.js, PostgreSQL and Express.
 Install all dependencies
 
 ```
-npm install
+make install
 ```
 
 Run The Software
 
 ```
-npm start
+make run
 ```
+* server will be available at `http://localhost:3000`
 
-Open
-
-```
-http://localhost:3000
-```
-
-Test
+Run Tests
 
 ```
-npm test
+make test
 ```
 
 ## Features
