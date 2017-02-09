@@ -19,7 +19,7 @@
 }
 
 /* footer css */
-social:hover {
+.social:hover {
      -webkit-transform: scale(1.1);
      -moz-transform: scale(1.1);
      -o-transform: scale(1.1);
@@ -54,7 +54,7 @@ social:hover {
  /* footer css over */
 
 /*welcome page */
-profile {
+.profile {
   margin: 20px 0;
 }
 
@@ -157,7 +157,7 @@ profile {
   min-height: 460px;
 }
 /*model*/
-widget-area {
+.widget-area {
 background-color: #fff;
 -webkit-border-radius: 4px;
 -moz-border-radius: 4px;

@@ -1,8 +1,7 @@
 extends ./layouts/main.pug
 
 block content
-  //- p= count
-  p=tweet
+
   h1= title
 
   .container.head.navbar-default.navbar-fixed-top(style ="backgroung-color : #ffff")
@@ -32,21 +31,24 @@ block content
       .row
         .col-sm-3
           .profile-usermenu
-            ul.nav.nav-pills.nav-stacked(data-spy='affix', data-offset-top='205')
+            ul.nav
+              li.active
+                a(href='/profilechange')
+                  i.glyphicon.glyphicon-user(style ="color : #00aced;")
+                    |               Profile
               li
                 a(href='/profilepictureupload')
                   i.glyphicon.glyphicon-pencil(style ="color : #00aced;")
-                    |               edit Profile
-
+                    |               Edit Profile
               li
                 a(href='/welcome')(style ="color : #00aced;")
                   i.glyphicon.glyphicon-home
                     |               home
               li
-                a(href='/profilechange')
+                a(href='/followers')
                   i.glyphicon.glyphicon-ok(style ="color : #00aced;")
-                    |               folllowers &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    span.badge(style ="background-color : #00aced; font-size : 15px;")= count
+                    |               folllowers &nbsp;&nbsp;&nbsp;&nbsp;
+                  span.badge(style ="background-color : #00aced; color:#fff; font-size : 15px;")= count
 
         .col-sm-6
           .profile-content
@@ -55,16 +57,16 @@ block content
                 i.glyphicon.glyphicon-pencil &nbsp;
                 | Tweet here  !!
             .row
-              .widget-area.no-padding.blank
+              .no-padding.blank
                 .status-upload
                   .page-canvas
-                      form(action='/tweet', method='post')
-
-                        textarea(name='tweet' placeholder='What are you doing right now?', maxlength="140" , required)
-                        input(type='file', name='imagetweet' ,style ="color : #00aced;")
-                        button.btn.btn-info(type='submit')
-                          i.fa.fa-share
-                          |  tweet
+                    form(action='/tweet', method='post',enctype='multipart/form-data')
+                      textarea(name='tweet' placeholder='What are you doing right now?', maxlength="140" , required)
+                      div(class='form-group')
+                        .col-sm-5
+                          input.btn-sm.waves-effect.waves-light(style ="background-color : #00aced; color: #fff;", type="submit", value="Tweet", name="Tweet")
+                        .col-sm-7
+                          input.btn-sm.waves-effect.waves-light(type='file', name='imagetweet')
 
             .row
               h4(style ="color : #00aced;") Your tweets are here !!!!
@@ -75,28 +77,28 @@ block content
                   - const a = new Date(row.time)
                     .media.block-update-card
                       a.pull-left(href='#')
-                        img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
+                        img.img-circle.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
                       .media-body.update-card-body
-                        h5.media-heading(style ="color : #00aced;")=row.username
+                        h6.media-heading(style ="color : #00aced;")=row.username
                         p= row.tweet
                         -if(row.imagetweet)
                           img.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "400px" width="400px")
                         p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
                         a(href='/deletetweet/' + row.id)
-                          i.glyphicon.glyphicon-trash
+                          i.material-icons delete
 
         .col-sm-3
           .profile-content
             .sidebar-menu
-              h4(style ="color : #00aced;") Your followers!!!!
+              h5(style ="color : #00aced;") Your followers!!!!
               each rows in users
                 p
-                .page-canvas(style = "padding :5px;")
-                  .media.block-update-card
-                      a.pull-left(href='#')
-                        img.media-object.update-card-MDimentions(src='./images/'+ rows.image, height = "60px" width="60px")
-                      .media-body.update-card-body
-                        h5.media-heading(style ="color : #00aced; font-size : 15px;")= rows.username
-                        form(method="post" action="/unfollow")
-                          input(type="hidden",name="followerId",value=rows.id)
-                          button.btn.btn-info(type="submit") Unfollow
+                .media.block-update-card
+                    a.pull-left(href='#')
+                      img.img-circle.media-object.update-card-MDimentions(src='./images/'+ rows.image, height = "60px" width="60px")
+                    .media-body.update-card-body
+                      a.media-heading(href=`/profile/${rows.user_id}`,style ="color : #00aced; font-size : 15px;")= rows.username
+                      form(method="post" action="/unfollow")
+                        input(type="hidden",name="followerId",value=rows.id)
+                        input.btn-sm.waves-effect.waves-light(style ="background-color : #00aced; color: #fff;", type="submit", value="Unfollow")
+                        //- button.btn.btn-info(type="submit") Unfollow

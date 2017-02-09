@@ -41,73 +41,83 @@ block content
                     li
                       a(href='/profilechange')
                         i.glyphicon.glyphicon-user(style ="color : #00aced;")
-                          |      Profile
+                        |    Profile
                     li.active
                       a(href='/welcome')
                         i.glyphicon.glyphicon-home(style ="color : #00aced;")
-                          |      home
+                        |    home
                     li
-                      a(href='/profilechange', target='_blank')
+                      a(href='/followers')
                         i.glyphicon.glyphicon-ok(style ="color : #00aced;")
-                          |    folllowers &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          span.badge(style ="background-color : #00aced; font-size : 15px;")= count
+                        |    followers
+                        span.badge(style ="background-color : #00aced; color:#fff; font-size : 15px;")= count
 
                 //- END MENU
             .col-sm-6
               .profile-content
-                .container
-                  .row
-                    p(style ="color : #00aced;")
-                      i.glyphicon.glyphicon-pencil &nbsp;
-                      | What's in your mind ??
-                  .row
-                    .col-sm-5
-                      .widget-area.no-padding.blank
-                        .status-upload
-                          .page-canvas
-                              form(action='/tweet',enctype='multipart/form-data', method='post')
+                .row
+                  p(style ="color : #00aced;")
+                    i.glyphicon.glyphicon-pencil &nbsp;
+                    | What's in your mind ??
+                .row
+                  .no-padding.blank
+                    .status-upload
+                      .page-canvas
+                        form(action='/tweet',enctype='multipart/form-data', method='post')
+                          textarea(name='tweet' placeholder='What are you doing right now?', maxlength="140" , required)
+                          div(class='form-group')
+                            .col-sm-5
+                              input.btn-sm.waves-effect.waves-light(style ="background-color : #00aced; color: #fff;", type="submit", value="Tweet", name="Tweet")
+                            .col-sm-7
+                              input.btn-sm.waves-effect.waves-light(type='file', name='imagetweet')
+                                //- input(type='file', name='imagetweet')
+                              //- .file-path-wrapper
+                              //-   input.file-path.validate(type="text")
 
-                                textarea(name='tweet' placeholder='What are you doing right now?', maxlength="140" , required)
-                                div(class='form-group')
-                                  div(class='col-sm-4')
-                                    input(type='file', name='imagetweet' ,style ="color : #00aced;")
-                                button.btn.btn-info(type='submit')
-                                  i.fa.fa-share
-                                  |  tweet
+                .row
+                  each row in tweets
+                    p
+                    .page-canvas(style = "padding :5px;")
+                      - const a = new Date(row.time)
+                      .media.block-update-card
+                        a.pull-left(href='#')
+                          img.img-circle.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
+                        .media-body.update-card-body
+                          a.media-heading(href=`/profile/${row.user_id}`,style ="color : #00aced;")=row.username
+                          p= row.tweet
+                          -if(row.imagetweet)
+                            img.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "400px" width="400px")
 
-                  .row
-                    .col-sm-5
-                      p &nbsp;
-                  .row
-                    .col-sm-5
-                      each row in tweets
-                        p
-                        .page-canvas(style = "padding :5px;")
-                          - const a = new Date(row.time)
-                          .media.block-update-card
-                            a.pull-left(href='#')
-                              img.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
-                            .media-body.update-card-body
-                              h5.media-heading(style ="color : #00aced;")=row.username
-                              p= row.tweet
-                              br
-                            -if(row.imagetweet)
-                              img.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "400px" width="448px")
+                          p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
 
-                              p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
-
-            .col-sm-3(style ="padding-top :30px")
-              div(class="page-container")
-                p(style ="color : #00aced;")
-                  i.glyphicon.glyphicon-user &nbsp;
-                  | People you may know
+            .col-sm-3
+              .profile-content
                 .sidebar-menu
-                  each rows in follow
-                    p &nbsp;
-                    .page-canvas
-                      img.img-fluid.thumbnail.card-img-top(src='./images/'+ rows.image ,height="150px" ,width="150px")
-                      .card-block
-                        h5.card-title(style ="color : #00aced;")= rows.username
-                        form(method='post', action='/follower')
-                          input(type='hidden',name='followerId',value=rows.user_id)
-                          button.btn.btn-info(type='submit') follow
+                  p(style ="color : #00aced;")
+                    i.glyphicon.glyphicon-user &nbsp;
+                    | People you may know
+                  .row
+                    each rows in follow
+                      hr
+                      .media.block-update-card(align="center")
+                        img.img-circle(src='./images/'+ rows.image, height = "140" width="140")
+                        h6(style ="color : #00aced;")= rows.username
+                        form(method="post" action="/follower")
+                          input(type="hidden",name="followerId",value=rows.user_id)
+                          input.btn-sm.waves-effect.waves-light(style ="background-color : #00aced; color: #fff;", type="submit", value="Follow")
+                          //- button.btn-sm(type="submit") Follow
+            //- .col-sm-3(style ="padding-top :30px")
+            //-   div(class="page-container")
+            //-     p(style ="color : #00aced;")
+            //-       i.glyphicon.glyphicon-user &nbsp;
+            //-       | People you may know
+            //-     .sidebar-menu
+            //-       each rows in follow
+            //-         p &nbsp;
+            //-         .page-canvas
+            //-           img.img-fluid.thumbnail.card-img-top(src='./images/'+ rows.image ,height="150px" ,width="150px")
+            //-           .card-block
+            //-             h5.card-title(style ="color : #00aced;")= rows.username
+            //-             form(method='post', action='/follower')
+            //-               input(type='hidden',name='followerId',value=rows.user_id)
+            //-               button.btn.btn-info(type='submit') follow

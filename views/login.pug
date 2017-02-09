@@ -45,13 +45,11 @@ block content
                   div.msgalert= error.msg
         .form-group
           .col-sm-5
-            .col
-             input.form-control.button.btn-info(type="submit", name="Submit" ,value ="Log In")
-            .col-sm-7
-              .checkbox
-                label
-                  input(type='checkbox' value='1' name='remember_me' checked='checked')
-                  | Remember me
-                  span.separator &middot;&nbsp;
-                  form(action='/retrive_password', method='post')
-                    a.button(type='submit', style ="color : #00aced;") Forgot password?
+
+            input.filled-in(type="checkbox", name='remember_me', value='1', checked="checked", required)
+            label
+              | Remember me
+              span.separator &middot;&nbsp;
+              form(action='/retrive_password', method='post')
+                a.button(type='submit', style ="color : #00aced;") Forgot password?
+            input.form-control.button.btn-info(type="submit", name="Submit" ,value ="Log In")

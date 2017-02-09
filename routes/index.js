@@ -11,6 +11,124 @@ router.get('/login', (req, res) => {
   res.render('login');
 });
 
+router.get('/profile/:id', (req, res, next) => {
+  const profileid = req.params.id;
+  const session = req.session;
+  let query;
+  if(session.user_id) {
+    if (profileid == session.user_id) {
+      res.redirect('/profilechange');
+    } else {
+      query = DB.builder()
+      .select()
+      .from('users')
+      .where('user_id = ?', profileid)
+      .toParam();
+      DB.executeQuery(query, (error, profile) => {
+        if (error) {
+          next(error);
+          return;
+        }
+        query = DB.builder()
+          .select()
+          .field('tweet')
+          .field('time')
+          .field('username')
+          .field('image')
+          .field('imagetweet')
+          .field('user_id')
+          .field('id')
+          .from('tweet', 't')
+          .join(DB.builder()
+          .select()
+          .from('users'), 'u', 't.userid = u.user_id')
+          .where('user_id = ?', profileid)
+          .order('time', false)
+          .toParam();
+          DB.executeQuery(query, (errorusers, tweets) => {
+            if (errorusers) {
+              next(errorusers);
+              return;
+            }
+            query = DB.builder()
+            .select()
+            .from('follower')
+            .where('login_user_id = ?', profileid)
+            .toParam();
+            DB.executeQuery(query, (errorusers, c) => {
+              if (errorusers) {
+                next(errorusers);
+                return;
+              }
+              res.render('profile', {
+                profile: profile.rows[0],
+                count: c.rows.length,
+                tweets: tweets.rows,
+              });
+            });
+          });
+      });
+    }
+  } else {
+    res.redirect('/login');
+  }
+});
+
+router.get('/followers', (req, res) => {
+  const session = req.session;
+  let query;
+  if (session.user_id) {
+    query = DB.builder()
+    .select()
+    .from('users')
+    .where('user_id = ?', session.user_id)
+    .toParam();
+    DB.executeQuery(query, (error, results) => {
+      if (error) {
+        next(error);
+        return;
+      }
+      query = DB.builder()
+      .select()
+      .field('username')
+      .field('follower_id')
+      .field('user_id')
+      .field('image')
+      .field('id')
+      .from('users', 'r')
+      .join(DB.builder()
+      .select()
+      .from('follower'), 'f', 'r.user_id = f.follower_id')
+      .where('login_user_id = ?', session.user_id)
+      .toParam();
+      DB.executeQuery(query, (errorresults, users) => {
+        if (errorresults) {
+          next(errorresults);
+          return;
+        }
+        query = DB.builder()
+        .select()
+        .from('follower')
+        .where('login_user_id = ?', session.user_id)
+        .toParam();
+        DB.executeQuery(query, (errorusers, c) => {
+          if (errorusers) {
+            next(errorusers);
+            return;
+          }
+          res.render('followers', {
+            count: c.rows.length,
+            users: users.rows,
+            results: results.rows,
+          });
+        });
+      });
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
+
 router.post('/login', (req, res, next) => {
   const email = req.sanitize('email').trim();
   const password = req.sanitize('password').trim();
@@ -223,6 +341,7 @@ router.get('/welcome', (req, res, next) => {
         .field('imagetweet')
         .field('time')
         .field('id')
+        .field('user_id')
         .field('image')
         .from('users', 'u')
         .join(DB.builder().select().from('tweet'), 't', 'u.user_id = t.userid')
