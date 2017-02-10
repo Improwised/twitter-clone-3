@@ -76,19 +76,20 @@ block content
 
                 .row
                   each row in tweets
+                    - const a = new Date(row.time)
                     p
                     .page-canvas(style = "padding :5px;")
-                      - const a = new Date(row.time)
-                      .media.block-update-card
-                        a.pull-left(href='#')
-                          img.img-circle.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
-                        .media-body.update-card-body
-                          a.media-heading(href=`/profile/${row.user_id}`,style ="color : #00aced;")=row.username
-                          p= row.tweet
-                          -if(row.imagetweet)
-                            img.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "400px" width="400px")
-
-                          p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
+                      p
+                        .media.block-update-card
+                          .chip
+                            img(src='./images/'+ row.image, alt="Person")
+                            a.media-heading(href=`/profile/${row.user_id}`,style ="color : #00aced;")=row.username
+                          font(style ="color : #A9A9A9;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
+                          .media-body.update-card-body(style="padding-left: 20%;")
+                            p= row.tweet
+                            -if(row.imagetweet)
+                              r
+                              img.img-responsive.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "400px" width="400px")
 
             .col-sm-3
               .profile-content
@@ -100,7 +101,7 @@ block content
                     each rows in follow
                       hr
                       .media.block-update-card(align="center")
-                        img.img-circle(src='./images/'+ rows.image, height = "140" width="140")
+                        img.img-circle.img-responsive(src='./images/'+ rows.image, height = "140" width="140")
                         h6(style ="color : #00aced;")= rows.username
                         form(method="post" action="/follower")
                           input(type="hidden",name="followerId",value=rows.user_id)

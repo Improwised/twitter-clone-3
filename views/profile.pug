@@ -53,23 +53,22 @@ block content
         .col-sm-6
           .profile-content
             .row
-              h5(style ="color : #00aced;")= profile.username+' \'s tweets are here !!!!'
+              h5(style ="color : #00aced;")= profile.username+'\'s tweets are here !!!!'
               each row in tweets
+                - const a = new Date(row.time)
                 p
                 .page-canvas(style = "padding :5px;")
                   p
-                  - const a = new Date(row.time)
                     .media.block-update-card
-                      a.pull-left(href='#')
-                        img.media-object.update-card-MDimentions(src='/images/'+ row.image, height = "50px" width="50px")
-                      .media-body.update-card-body
-                        h6.media-heading(style ="color : #00aced;")=row.username
+                      .chip
+                        img(src='/images/'+ row.image, alt="Person")
+                        a.media-heading(href=`/profile/${row.user_id}`,style ="color : #00aced;")=row.username
+                      font(style ="color : #A9A9A9;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
+                      .media-body.update-card-body(style="padding-left: 20%;")
                         p= row.tweet
                         -if(row.imagetweet)
-                          img.media-object.update-card-MDimentions(src='/images/'+ row.imagetweet, height = "400px" width="400px")
-                        p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
-        //-                 a(href='/deletetweet/' + row.id)
-        //-                   i.material-icons delete
+                          r
+                          img.img-responsive.media-object.update-card-MDimentions(src='/images/'+ row.imagetweet, height = "400px" width="400px")
 
         //- .col-sm-3
         //-   .profile-content

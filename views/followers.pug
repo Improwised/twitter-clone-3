@@ -23,7 +23,7 @@ block content
     .fb-profile
       img.fb-image-lg(align='left', src='./images/cover.jpg', alt='Profile image example' width ="100%")
       each i in results
-        img.fb-image-profile.thumbnail(align='left', src='./images/'+ i.image ,height = "228px" width="90px" )
+        img.imgresize.img-responsive.fb-image-profile.thumbnail(align='left', src='./images/'+ i.image ,height = "228px" width="90px" )
         .fb-profile-text
           h1(style ="color : #00aced;")= i.username
   .container
@@ -52,13 +52,12 @@ block content
             .sidebar-menu
               h4(style ="color : #00aced;") Your followers!!!!
               .row
+                .col-sm-12
                 each rows in users
-                  .col-sm-3
-                    .media.block-update-card(align="center" padding="5px")
-                      img.img-circle(src='./images/'+ rows.image, height = "140" width="140")
-                      a(href=`/profile/${rows.user_id}`)
-                        h2(style ="color : #00aced; font-size : 15px;")= rows.username
-                      form(method="post" action="/unfollow")
-                        input(type="hidden",name="followerId",value=rows.id)
-                        input.btn-sm.waves-effect.waves-light(style ="background-color : #00aced; color: #fff;", type="submit", value="Unfollow")
-                        //- button.btn.btn-info(type="submit") Unfollow
+                  .col-xl-2.col-lg-3.col-md-6.col-sm-6.col-12(align='center')
+                    img.img-circle(src='./images/'+ rows.image, height = "140" width="140")
+                    a(href=`/profile/${rows.user_id}`)
+                      h2(style ="color : #00aced; font-size : 15px;")= rows.username
+                    form(method="post" action="/unfollow")
+                      input(type="hidden",name="followerId",value=rows.id)
+                      input.btn-sm.waves-effect.waves-light(style ="background-color : #00aced; color: #fff;", type="submit", value="Unfollow")

@@ -69,28 +69,29 @@ block content
                           input.btn-sm.waves-effect.waves-light(type='file', name='imagetweet')
 
             .row
-              h4(style ="color : #00aced;") Your tweets are here !!!!
+              h5(style ="color : #00aced;") Your tweets are here !!!!
               each row in tweets
+                - const a = new Date(row.time)
                 p
                 .page-canvas(style = "padding :5px;")
-                  p
-                  - const a = new Date(row.time)
-                    .media.block-update-card
-                      a.pull-left(href='#')
-                        img.img-circle.media-object.update-card-MDimentions(src='./images/'+ row.image, height = "50px" width="50px")
-                      .media-body.update-card-body
-                        h6.media-heading(style ="color : #00aced;")=row.username
-                        p= row.tweet
-                        -if(row.imagetweet)
-                          img.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "400px" width="400px")
-                        p(style ="color : #00aced;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
-                        a(href='/deletetweet/' + row.id)
-                          i.material-icons delete
+                  .chip
+                    img(src='./images/'+ row.image, alt="Person")
+                    a.media-heading(href=`/profile/${row.user_id}`,style ="color : #00aced;")=row.username
+                  font(style ="color : #A9A9A9;")=a.getDate() + "/" + (a.getMonth()+1) + "/" + a.getFullYear() + " " + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds()
+                  a.right(href='/deletetweet/' + row.id)
+                    i.material-icons delete
+                  .media-body.update-card-body(style="padding-left: 20%;")
+                    p= row.tweet
+                    -if(row.imagetweet)
+                      r
+                      img.img-responsive.media-object.update-card-MDimentions(src='./images/'+ row.imagetweet, height = "400px" width="400px")
 
         .col-sm-3
           .profile-content
             .sidebar-menu
-              h5(style ="color : #00aced;") Your followers!!!!
+              h6(style ="color : #00aced;")
+                i.material-icons.left supervisor_account
+                |       Your followers!!!!
               each rows in users
                 p
                 .media.block-update-card
