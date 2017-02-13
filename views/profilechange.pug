@@ -21,9 +21,9 @@ block content
                   | Logout
   .container
     .fb-profile
-      img.fb-image-lg(align='left', src='./images/cover.jpg', alt='Profile image example' width ="100%")
+      img.fb-image-lg(align='left', src='./images/cover.jpg', alt='Profile image example')
       each i in results
-        img.fb-image-profile.thumbnail(align='left', src='./images/'+ i.image ,height = "228px" width="90px" )
+        img.fb-image-profile.thumbnail(align='left', src='./images/'+ i.image)
         .fb-profile-text
           h1(style ="color : #00aced;")= i.username
   .container
@@ -94,7 +94,7 @@ block content
                 |       Your followers!!!!
               each rows in users
                 p
-                .media.block-update-card
+                  .media.block-update-card
                     a.pull-left(href='#')
                       img.img-circle.media-object.update-card-MDimentions(src='./images/'+ rows.image, height = "60px" width="60px")
                     .media-body.update-card-body

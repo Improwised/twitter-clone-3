@@ -22,7 +22,7 @@ block content
   .container
     .fb-profile
       img.fb-image-lg(align='left', src='/images/cover.jpg', alt='Profile image example' width ="100%")
-      img.fb-image-profile.thumbnail(align='left', src='/images/' + profile.image ,height = "228px" width="90px" )
+      img.fb-image-profile.thumbnail(align='left', src='/images/' + profile.image)
       .fb-profile-text
         h1(style ="color : #00aced;")= profile.username
   .container
@@ -57,9 +57,8 @@ block content
               each row in tweets
                 - const a = new Date(row.time)
                 p
-                .page-canvas(style = "padding :5px;")
                   p
-                    .media.block-update-card
+                    .media.block-update-card.page-canvas(style = "padding :5px;")
                       .chip
                         img(src='/images/'+ row.image, alt="Person")
                         a.media-heading(href=`/profile/${row.user_id}`,style ="color : #00aced;")=row.username

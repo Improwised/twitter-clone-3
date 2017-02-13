@@ -268,7 +268,7 @@ border-left-color: #2dcb73;
 margin-right: 7px;
 }
 /* profile page*/
-fb-profile img.fb-image-lg{
+.fb-profile img.fb-image-lg{
     z-index: 0;
     width: 100%;
     margin-bottom: 10px;
@@ -277,13 +277,12 @@ fb-profile img.fb-image-lg{
 .fb-image-profile
 {
     margin: -90px 10px 0px 50px;
-
     z-index: 9;
     width: 20%;
 
 }
 
-@media (max-width:100%)
+@media (max-width:768px)
 {
 
 .fb-profile-text>h1{
@@ -301,13 +300,13 @@ fb-profile img.fb-image-lg{
 /*card css*/
 .block-update-card {
   height: 100%;
-  border: 1px #FFFFFF solid;
-  width: 380px;
+  /*border: 1px #FFFFFF solid;*/
+  /*width: 380px;*/
   float: left;
   margin-left: 10px;
   margin-top: 0;
   padding: 0;
-  box-shadow: 1px 1px 8px #d8d8d8;
+  /*box-shadow: 1px 1px 8px #d8d8d8;*/
   background-color: #FFFFFF;
 }
 .block-update-card .h-status {
@@ -355,7 +354,7 @@ fb-profile img.fb-image-lg{
   color: #a9a9aa;
   font-weight: bold;
   font-size: 14px;
-  border-top: #e0e0e0 1px solid;
+  /*border-top: #e0e0e0 1px solid;*/
   padding-top: 5px;
   margin: 0px;
 }
@@ -383,4 +382,5 @@ fb-profile img.fb-image-lg{
     cursor: pointer;
     opacity: 0;
 
+}
 }
